@@ -159,7 +159,7 @@ export class LetterApi {
     }
     const resp = await this.client.fire(
       'POST',
-      `letters`,
+      'letters',
       undefined,
       body)
     if (resp?.response?.status === 422) {

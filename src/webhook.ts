@@ -79,7 +79,7 @@ export class WebhookApi {
   }> {
     const resp = await this.client.fire(
       'GET',
-      `webhooks`,
+      'webhooks',
       { skip: skip || 0, limit: limit || 40 },
     )
     if (resp?.response?.status === 404) {
@@ -141,7 +141,7 @@ export class WebhookApi {
     const body = webhook
     const resp = await this.client.fire(
       'POST',
-      `webhooks`,
+      'webhooks',
       undefined,
       body)
     if (resp?.response?.status === 422) {

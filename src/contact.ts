@@ -114,7 +114,7 @@ export class ContactApi {
     const body = contact
     const resp = await this.client.fire(
       'POST',
-      `contacts`,
+      'contacts',
       undefined,
       body)
     if (resp?.response?.status === 422) {

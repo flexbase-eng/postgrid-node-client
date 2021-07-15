@@ -16,7 +16,7 @@ const POSTGRID_HOST = 'api.postgrid.com/print-mail/v1/'
  * These are the acceptable options to the creation of the Client:
  *
  *   {
- *     webhookUrl: "https://my.service.com/notarize/webhook"
+ *     webhookUrl: "https://my.service.com/postgrid/webhook"
  *   }
  *
  * and the construction of the Client will set the webhook to this URL
@@ -83,7 +83,7 @@ export class PostGrid {
    * Function to fire off a GET, PUT, POST, (method) to the uri, preceeded
    * by the host, with the optional query params, and optional body, and
    * puts the 'apiKey' into the headers for the call, and fires off the call
-   * to the Notarize host and returns the response.
+   * to the PostGrid host and returns the response.
    */
   async fire(
     method: string,

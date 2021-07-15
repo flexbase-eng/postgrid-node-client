@@ -1,0 +1,59 @@
+{
+  "name": "postgrid-node-client",
+  "version": "0.1.0",
+  "description": "Node.js Client for PostGrid Business API",
+  "keywords": [
+    "postgrid.com",
+    "postal delivery",
+    "api"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/flexbase-eng/postgrid-node-client.git"
+  },
+  "author": {
+    "name": "Flexbase Technologies",
+    "email": "hello@flexbase.app",
+    "url": "https://flexbase.app"
+  },
+  "contributors": [
+    "Bob Beaty <bob@flexbase.app>",
+    "Patrick Flor <patrick@flexbase.app>"
+  ],
+  "engines": {
+    "node": ">=10.*"
+  },
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build"
+  ],
+  "devDependencies": {
+    "@types/delay": "^3.1.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/node-fetch": "^2.5.10",
+    "@typescript-eslint/parser": "^4.24.0",
+    "delay": "^5.0.0",
+    "dotenv": "^9.0.2",
+    "eslint": "^7.26.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.3.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "@types/node": ">=10.0.0",
+    "camelcase-keys": "^6.2.2",
+    "form-data": "^3.0.1",
+    "node-fetch": "^2.6.1",
+    "snakecase-keys": "^4.0.2"
+  },
+  "scripts": {
+    "ts": "ts-node -r dotenv/config",
+    "prepublishOnly": "tsc --declaration",
+    "lint": "eslint . --ext .ts --fix",
+    "test": "echo 'This project currently uses manually run end-to-end tests; see https://github.com/flexbase-eng/notarize-node-client/tree/main#development for setup instructions.'"
+  }
+}

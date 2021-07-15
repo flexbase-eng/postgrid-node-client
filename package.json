@@ -1,6 +1,6 @@
 {
   "name": "postgrid-node-client",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Node.js Client for PostGrid Business API",
   "keywords": [
     "postgrid.com",
@@ -55,6 +55,6 @@
     "ts": "ts-node -r dotenv/config",
     "prepublishOnly": "tsc --declaration",
     "lint": "eslint . --ext .ts --fix",
-    "test": "echo 'This project currently uses manually run end-to-end tests; see https://github.com/flexbase-eng/notarize-node-client/tree/main#development for setup instructions.'"
+    "test": "echo 'This project currently uses manually run end-to-end tests; see https://github.com/flexbase-eng/postgrid-node-client/tree/main#development for setup instructions.'"
   }
 }

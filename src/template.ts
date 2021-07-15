@@ -91,7 +91,7 @@ export class TemplateApi {
     const body = template
     const resp = await this.client.fire(
       'POST',
-      `templates`,
+      'templates',
       undefined,
       body)
     if (resp?.response?.status === 422) {

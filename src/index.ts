@@ -6,6 +6,7 @@ import camelCaseKeys from 'camelcase-keys'
 import { ContactApi } from './contact'
 import { TemplateApi } from './template'
 import { LetterApi } from './letter'
+import { PostcardApi } from './postcard'
 import { WebhookApi } from './webhook'
 
 const ClientVersion = require('../package.json').version
@@ -55,6 +56,7 @@ export class PostGrid {
   contact: ContactApi
   template: TemplateApi
   letter: LetterApi
+  postcard: PostcardApi
   webhook: WebhookApi
 
   constructor (apiKey: string, options?: PostGridOptions) {
@@ -67,6 +69,7 @@ export class PostGrid {
     this.contact = new ContactApi(this, options)
     this.template = new TemplateApi(this, options)
     this.letter = new LetterApi(this, options)
+    this.postcard = new PostcardApi(this, options)
     this.webhook = new WebhookApi(this, options)
 
     // if we have a webhook, then create that now

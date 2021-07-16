@@ -311,8 +311,9 @@ If there had been an error, the response would be:
 }
 ```
 
-It's important to remember that if the same Contact information is supplied,
-PostGrid will not create a new Contact - simply reuse the one it already has.
+It's important to remember that if the same Contact information is supplied
+as an existing Contact, PostGrid will not create a new Contact - simply
+reuse the one it already has.
 
 But there are other ways to create a letter. You can use the Contact IDs,
 like:
@@ -449,6 +450,301 @@ above example, and the response will be something like:
   "letter": {
     "id": "letter_hBy6M5DMKEqp7z1paW1TDM",
     "object": "letter",
+    "deleted": true
+  }
+}
+```
+
+### Postcard Calls
+
+The PostGrid Postcard is a basic postcard that can be sourced from an
+HTML template, with replacable parameters, or a PDF, and can be sent from
+a Sender to a Recipient through the Postal System. The available sizes are:
+
+* `6x4`
+* `9x6`
+* `11x6`
+
+which is specified in the `size` parameter of the `postcard.create()`
+function call.
+
+#### [Create Postcard](https://docs.postgrid.com/#9573c2da-ff96-4d65-b40b-99dc7df556c3)
+
+The basic Create Postcard call looks something like this:
+
+```typescript
+const postcard = await client.postcard.create({
+  description: 'Cool new postcard',
+  size: '6x4',
+  frontHTML: 'Hello, {{to.firstName}}',
+  backHTML: 'Hello again, {{to.firstName}}',
+  to: {
+    firstName: 'Steve',
+    lastName: 'Smith',
+    companyName: 'Acme Rentals',
+    addressLine1: '5454 West 34th Street',
+    city: 'Indianapolis',
+    provinceOrState: 'IN',
+    postalOrZip: '46224',
+    countryCode: 'US',
+  },
+  from: {
+    firstName: 'John',
+    lastName: 'Quincy',
+    companyName: 'US Steel',
+    addressLine1: '123 Main Street',
+    city: 'Atlanta',
+    provinceOrState: 'GA',
+    postalOrZip: '12345',
+    countryCode: 'US',
+  },
+})
+```
+
+This will create the postcard with the provided addresses, and in it will then
+start it's journey to the recipient. The response will be something like:
+
+```javascript
+{
+  "success": true,
+  "postcard": {
+    "id": "postcard_48Fm3w14DGjRKKpsD2GrXJ",
+    "object": "postcard",
+    "live": false,
+    "backHtml": "Hello again, {{to.firstName}}",
+    "description": "Cool new postcard",
+    "from": {
+      "id": "contact_fo3HwdeFZ3wwNuHFAgszHt",
+      "object": "contact",
+      "addressLine1": "123 MAIN STREET",
+      "addressLine2": null,
+      "addressStatus": "verified",
+      "city": "ATLANTA",
+      "companyName": "US Steel",
+      "country": "UNITED STATES",
+      "countryCode": "US",
+      "firstName": "John",
+      "lastName": "Quincy",
+      "postalOrZip": "12345",
+      "provinceOrState": "GA"
+    },
+    "frontHtml": "Hello, {{to.firstName}}",
+    "sendDate": "2021-07-16T14:09:38.286Z",
+    "size": "6x4",
+    "status": "ready",
+    "to": {
+      "id": "contact_f8NLBJXjV82HnM8emVow3r",
+      "object": "contact",
+      "addressLine1": "5454 WEST 34TH STREET",
+      "addressLine2": null,
+      "addressStatus": "verified",
+      "city": "INDIANAPOLIS",
+      "companyName": "Acme Rentals",
+      "country": "UNITED STATES",
+      "countryCode": "US",
+      "firstName": "Steve",
+      "lastName": "Smith",
+      "postalOrZip": "46224",
+      "provinceOrState": "IN"
+    },
+    "createdAt": "2021-07-16T14:09:38.290Z",
+    "updatedAt": "2021-07-16T14:09:38.290Z"
+  }
+}
+```
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "errors": [ "(Error message from PostGrid...)" ]
+}
+```
+
+It's important to remember that if the same Contact information is supplied
+as an existing Contact, PostGrid will not create a new Contact - simply
+reuse the one it already has.
+
+But there are other ways to create a postcard. You can use the Contact IDs,
+like:
+
+```typescript
+const postcard = await client.postcard.create({
+  description: 'Cool new postcard',
+  pdf: 'https://my.artwork.com/postcards/6x4sample.pdf',
+  to: 'contact_f8NLBJXjV82HnM8emVow3r',
+  from: 'contact_fo3HwdeFZ3wwNuHFAgszHt',
+})
+```
+
+so that if you know the created Contact data, you can just pass in the IDs.
+Of course, you can mix-and-match as well.
+
+You can also use a standard Node `Buffer` to load up the Letter source:
+
+```typescript
+import fs from 'fs'
+
+const doc = fs.readFileSync('/my/local/file.pdf')
+
+const postcard = await client.postcard.create({
+  description: 'Cool new postcard',
+  pdf: doc,
+  to: 'contact_f8NLBJXjV82HnM8emVow3r',
+  from: 'contact_fo3HwdeFZ3wwNuHFAgszHt',
+})
+```
+
+all of these are covered in the different forms of the PostGrid _Create Postcard_
+endpoints, but the Client detects the inputs and acts accordingly. You just
+have to provide the data.
+
+#### [Get a Postcard]()
+
+```typescript
+const doc = await client.postcard.get(id)
+```
+
+where `id` is the Postcard ID, like `postcard_48Fm3w14DGjRKKpsD2GrXJ`, in the
+above example, and the response will be something like the response to the
+`client.postcard.create()` function.
+
+#### [List Postcards]()
+
+```typescript
+const doc = await client.postcard.list()
+```
+
+This will list all the Postcards assoiated with this API Key, and will do so
+in the PostGrid List paging scheme of `limit` and `skip`. These parameters
+are optional, and if they are omitted, the defaults are:
+
+* `skip` is `0`
+* `limit` is `40`
+
+The response will be something like:
+
+```javascript
+{
+  "success": true,
+  "postcards": {
+    "object": "list",
+    "limit": 40,
+    "skip": 0,
+    "totalCount": 3,
+    "data": [
+      {
+        "id": "postcard_agV7LbeDfRbdNUdnfePAyD",
+        "object": "postcard",
+        "live": false,
+        "backHtml": "Hello again, {{to.firstName}}",
+        "description": "Cool new postcard",
+        "from": {
+          "id": "contact_fo3HwdeFZ3wwNuHFAgszHt",
+          "object": "contact",
+          "addressLine1": "123 MAIN STREET",
+          "addressLine2": null,
+          "addressStatus": "verified",
+          "city": "ATLANTA",
+          "companyName": "US Steel",
+          "country": "UNITED STATES",
+          "countryCode": "US",
+          "firstName": "John",
+          "lastName": "Quincy",
+          "postalOrZip": "12345",
+          "provinceOrState": "GA"
+        },
+        "frontHtml": "Hello, {{to.firstName}}",
+        "sendDate": "2021-07-16T14:14:37.023Z",
+        "size": "6x4",
+        "status": "ready",
+        "to": {
+          "id": "contact_f8NLBJXjV82HnM8emVow3r",
+          "object": "contact",
+          "addressLine1": "5454 WEST 34TH STREET",
+          "addressLine2": null,
+          "addressStatus": "verified",
+          "city": "INDIANAPOLIS",
+          "companyName": "Acme Rentals",
+          "country": "UNITED STATES",
+          "countryCode": "US",
+          "firstName": "Steve",
+          "lastName": "Smith",
+          "postalOrZip": "46224",
+          "provinceOrState": "IN"
+        },
+        "createdAt": "2021-07-16T14:14:37.027Z",
+        "updatedAt": "2021-07-16T14:14:37.027Z"
+      },
+      {
+        "id": "postcard_48Fm3w14DGjRKKpsD2GrXJ",
+        "object": "postcard",
+        "live": false,
+        "backHtml": "Hello again, {{to.firstName}}",
+        "description": "Cool new postcard",
+        "from": {
+          "id": "contact_fo3HwdeFZ3wwNuHFAgszHt",
+          "object": "contact",
+          "addressLine1": "123 MAIN STREET",
+          "addressLine2": null,
+          "addressStatus": "verified",
+          "city": "ATLANTA",
+          "companyName": "US Steel",
+          "country": "UNITED STATES",
+          "countryCode": "US",
+          "firstName": "John",
+          "lastName": "Quincy",
+          "postalOrZip": "12345",
+          "provinceOrState": "GA"
+        },
+        "frontHtml": "Hello, {{to.firstName}}",
+        "pageCount": 2,
+        "sendDate": "2021-07-16T14:09:38.286Z",
+        "size": "6x4",
+        "status": "cancelled",
+        "to": {
+          "id": "contact_f8NLBJXjV82HnM8emVow3r",
+          "object": "contact",
+          "addressLine1": "5454 WEST 34TH STREET",
+          "addressLine2": null,
+          "addressStatus": "verified",
+          "city": "INDIANAPOLIS",
+          "companyName": "Acme Rentals",
+          "country": "UNITED STATES",
+          "countryCode": "US",
+          "firstName": "Steve",
+          "lastName": "Smith",
+          "postalOrZip": "46224",
+          "provinceOrState": "IN"
+        },
+        "url": "https://pg-prod-bucket-1.s3.amazonaws.com/test/...",
+        "createdAt": "2021-07-16T14:09:38.290Z",
+        "updatedAt": "2021-07-16T14:09:42.691Z"
+      },
+      ...
+    ]
+  }
+}
+```
+
+#### [Delete a Postcard]()
+
+This function will delete - or _Cancel_ a Postcard that's not yet been sent.
+
+```typescript
+const doc = await client.postcard.delete(id)
+```
+
+where `id` is the Postcard ID, like `postcard_agV7LbeDfRbdNUdnfePAyD`, in the
+above example, and the response will be something like:
+
+```javascript
+{
+  "success": true,
+  "postcard": {
+    "id": "postcard_agV7LbeDfRbdNUdnfePAyD",
+    "object": "postcard",
     "deleted": true
   }
 }

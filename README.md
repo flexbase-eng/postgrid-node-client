@@ -600,7 +600,7 @@ all of these are covered in the different forms of the PostGrid _Create Postcard
 endpoints, but the Client detects the inputs and acts accordingly. You just
 have to provide the data.
 
-#### [Get a Postcard]()
+#### [Get a Postcard](https://docs.postgrid.com/#51ca8b0c-dc40-44cb-bf7c-b784976d8d35)
 
 ```typescript
 const doc = await client.postcard.get(id)
@@ -610,7 +610,7 @@ where `id` is the Postcard ID, like `postcard_48Fm3w14DGjRKKpsD2GrXJ`, in the
 above example, and the response will be something like the response to the
 `client.postcard.create()` function.
 
-#### [List Postcards]()
+#### [List Postcards](https://docs.postgrid.com/#08cc954c-ecd2-4e95-bf79-402f4a199d06)
 
 ```typescript
 const doc = await client.postcard.list()
@@ -728,7 +728,7 @@ The response will be something like:
 }
 ```
 
-#### [Delete a Postcard]()
+#### [Delete a Postcard](https://docs.postgrid.com/#cf6d99a3-1e5f-42e4-99dd-21242f9ab65e)
 
 This function will delete - or _Cancel_ a Postcard that's not yet been sent.
 

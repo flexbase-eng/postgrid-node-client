@@ -3,10 +3,12 @@ import { PostGrid } from '../src/index'
 (async () => {
   const client = new PostGrid(process.env.POSTGRID_API_KEY!)
 
-  console.log('creating a single Letter...')
+  console.log('creating a single Postcard...')
   const what = {
-    description: 'Cool new letter',
-    pdf: 'https://www.icnaam.org/documents/8x11singlesample.pdf',
+    description: 'Cool new postcard',
+    size: '6x4',
+    frontHTML: 'Hello, {{to.firstName}}',
+    backHTML: 'Hello again, {{to.firstName}}',
     to: {
       firstName: 'Steve',
       lastName: 'Smith',
@@ -29,41 +31,41 @@ import { PostGrid } from '../src/index'
     },
   }
 
-  const one = await client.letter.create(what)
+  const one = await client.postcard.create(what)
   if (one.success) {
     console.log('Success!')
   } else {
-    console.log('Error! Creating the letter failed, and the output is:')
+    console.log('Error! Creating the postcard failed, and the output is:')
     console.log(one)
   }
 
   if (one.success) {
-    console.log('fetching a single Letter...')
-    const two = await client.letter.get(one.letter!.id)
+    console.log('fetching a single Postcard...')
+    const two = await client.postcard.get(one.postcard!.id)
     if (two.success) {
       console.log('Success!')
     } else {
-      console.log('Error! Fetching the letter failed, and the output is:')
+      console.log('Error! Fetching the postcard failed, and the output is:')
       console.log(two)
     }
   }
 
-  console.log('listing the first page of 40 Letters...')
-  const tre = await client.letter.list()
+  console.log('listing the first page of 40 Postcards...')
+  const tre = await client.postcard.list()
   if (tre.success) {
     console.log('Success!')
   } else {
-    console.log('Error! Listing the letters failed, and the output is:')
+    console.log('Error! Listing the postcards failed, and the output is:')
     console.log(tre)
   }
 
   if (one.success) {
-    console.log('deleting a single Letter...')
-    const fou = await client.letter.delete(one.letter!.id)
+    console.log('deleting a single Postcard...')
+    const fou = await client.postcard.delete(one.postcard!.id)
     if (fou.success) {
       console.log('Success!')
     } else {
-      console.log('Error! Deleting the letter failed, and the output is:')
+      console.log('Error! Deleting the postcard failed, and the output is:')
       console.log(fou)
     }
   }

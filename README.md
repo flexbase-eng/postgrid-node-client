@@ -433,6 +433,20 @@ The response will be something like:
 }
 ```
 
+#### [Progress a Test Letter](https://docs.postgrid.com/#946491db-95f5-45a7-a12d-1040b36e93c2)
+
+This function will move a Test Letter through the server-side processing
+steps, one at a time to allow the caller to verify the webhook calls. This
+is **_only_** available for Test Letters.
+
+```typescript
+const move = await client.letter.progress(id)
+```
+
+where `id` is the Letter ID, like `letter_hBy6M5DMKEqp7z1paW1TDM`, in the
+above example, and the response will be similar to the response from
+`client.letter.get(id)`.
+
 #### [Delete a Letter](https://docs.postgrid.com/#d15d3f9d-4485-4403-a519-be9c90e0e33e)
 
 This function will delete - or _Cancel_ a Letter that's not yet been sent.
@@ -728,6 +742,20 @@ The response will be something like:
 }
 ```
 
+#### [Progress a Test Postcard](https://docs.postgrid.com/#00b3d380-bdc6-4c84-b3a8-27bce0d5e0d3)
+
+This function will move a Test Postcard through the server-side processing
+steps, one at a time to allow the caller to verify the webhook calls. This
+is **_only_** available for Test Postcards.
+
+```typescript
+const move = await client.postcard.progress(id)
+```
+
+where `id` is the Postcard ID, like `postcard_agV7LbeDfRbdNUdnfePAyD`, in the
+above example, and the response will be similar to the response from
+`client.postcard.get(id)`.
+
 #### [Delete a Postcard](https://docs.postgrid.com/#cf6d99a3-1e5f-42e4-99dd-21242f9ab65e)
 
 This function will delete - or _Cancel_ a Postcard that's not yet been sent.
@@ -745,6 +773,411 @@ above example, and the response will be something like:
   "postcard": {
     "id": "postcard_agV7LbeDfRbdNUdnfePAyD",
     "object": "postcard",
+    "deleted": true
+  }
+}
+```
+
+### Bank Account Calls
+
+In general, the Bank Accounts are the account information for creating a
+check/cheque in the PostGrid system. These accounts can be created, updated,
+and deleted, as individual entities.
+
+#### [Create Bank Account](https://docs.postgrid.com/#632d1cf4-a44d-4593-ac15-4c35a0585b61)
+
+```typescript
+const account = await client.bankAccount.create({
+  description: 'This is where to put your marshmallows',
+  bankName: 'Bank of Marshmallows',
+  bankPrimaryLine: '3288 Tara Lane',
+  bankSecondaryLine: 'Indianapolis, IN',
+  bankCountryCode: 'US',
+  routingNumber: '123456789',
+  accountNumber: '100010001001',
+  signatureText: 'Stay Puff'
+})
+```
+
+This will create the account with the provided address and account information. The response will be something like:
+
+```javascript
+{
+  "success": true,
+  "account": {
+    "id": "bank_gMpKxPyiGzt1ZwACTmLHHn",
+    "object": "bank_account",
+    "live": false,
+    "accountNumberLast4": "1001",
+    "bankCountryCode": "US",
+    "bankName": "Bank of Marshmallows",
+    "bankPrimaryLine": "3288 Tara Lane",
+    "bankSecondaryLine": "Indianapolis, IN",
+    "description": "This is where to put your marshmallows",
+    "routingNumber": "123456789",
+    "signatureText": "Stay Puff",
+    "createdAt": "2021-07-18T16:19:35.626Z",
+    "updatedAt": "2021-07-18T16:19:35.626Z"
+  }
+}
+```
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "errors": [ "(Error message from PostGrid...)" ]
+}
+```
+
+So looking at the `success` value of the response will quickly let you know the outcome of the call.
+
+#### [Get a Bank Account](https://docs.postgrid.com/#8e4e3bec-a4e9-4710-a401-2a4fa409083c)
+
+```typescript
+const account = await client.bankAccount.get(id)
+```
+
+where `id` is the Bank Account ID, like `bank_gMpKxPyiGzt1ZwACTmLHHn`, in the
+above example, and the response will be something like the response to the
+`client.bankAccount.create()` function.
+
+#### [List Bank Accounts](https://docs.postgrid.com/#0f6bb690-0ba8-4b32-9aab-371652fe66cb)
+
+```typescript
+const accts = await client.bankAccount.list()
+```
+
+This will list all the Bank Accounts assoiated with this API Key, and will
+do so in the PostGrid List paging scheme of `limit` and `skip`. These
+parameters are optional, and if they are omitted, the defaults are:
+
+* `skip` is `0`
+* `limit` is `40`
+
+The response will be something like:
+
+```javascript
+{
+  "success": true,
+  "accounts": {
+    "object": "list",
+    "limit": 40,
+    "skip": 0,
+    "totalCount": 1,
+    "data": [
+      {
+        "id": "bank_a2M4zstWGeYeJ8gbtVKKr5",
+        "object": "bank_account",
+        "live": false,
+        "accountNumberLast4": "1001",
+        "bankCountryCode": "US",
+        "bankName": "Bank of Marshmallows",
+        "bankPrimaryLine": "3288 Tara Lane",
+        "bankSecondaryLine": "Indianapolis, IN",
+        "description": "This is where to put your marshmallows",
+        "routingNumber": "123456789",
+        "signatureText": "Stay Puff",
+        "createdAt": "2021-07-18T16:22:44.579Z",
+        "updatedAt": "2021-07-18T16:22:44.579Z"
+      }
+    ]
+  }
+}
+```
+
+#### [Delete a Bank Account](https://docs.postgrid.com/#8b589827-34ab-4c10-9500-5f06c500d3fa)
+
+```typescript
+const drop = await client.bankAccount.delete(id)
+```
+
+where `id` is the Bank Account ID, like `bank_a2M4zstWGeYeJ8gbtVKKr5`, in the
+above example, and the response will be something like:
+
+```javascript
+{
+  "success": true,
+  "account": {
+    "id": "bank_a2M4zstWGeYeJ8gbtVKKr5",
+    "object": "bank_account",
+    "deleted": true
+  }
+}
+```
+
+### Cheque/Check Calls
+
+The PostGrid Cheque (Check) is a check written against a Bank Account that
+can be sent to the `to` recipient with an optional letter sourced from an
+in-line HTML blob, a Template, or a PDF, and will be sent from
+a Sender to a Recipient through the Postal System.
+
+#### [Create Check](https://docs.postgrid.com/#b06be2fe-072d-43fc-aca0-2feeb7e029ef)
+
+The basic Create Check call looks something like this:
+
+```typescript
+const check = await client.check.create({
+  description: 'Cool new check',
+  letterHTML: 'Hello {{to.firstName}}',
+  to: {
+    firstName: 'Steve',
+    lastName: 'Smith',
+    companyName: 'Acme Rentals',
+    addressLine1: '5454 West 34th Street',
+    city: 'Indianapolis',
+    provinceOrState: 'IN',
+    postalOrZip: '46224',
+    countryCode: 'US',
+  },
+  from: {
+    firstName: 'John',
+    lastName: 'Quincy',
+    companyName: 'US Steel',
+    addressLine1: '123 Main Street',
+    city: 'Atlanta',
+    provinceOrState: 'GA',
+    postalOrZip: '12345',
+    countryCode: 'US',
+  },
+  bankAccount: 'bank_gMpKxPyiGzt1ZwACTmLHHn',
+  amount: 10000,
+  memo: 'Invoice 1233',
+  number: 9667,
+})
+```
+
+This will create the check with the provided addresses, against the Bank
+Account referenced by `bank_gMpKxPyiGzt1ZwACTmLHHn`, and will include a
+letter in the same envelope, with the contents of the `letterHTML`. The
+response will be something like:
+
+```javascript
+{
+  "success": true,
+  "check": {
+    "id": "cheque_7GrdUQPmbkAXJg8vLkJK9B",
+    "object": "cheque",
+    "live": false,
+    "amount": 10000,
+    "bankAccount": "bank_gMpKxPyiGzt1ZwACTmLHHn",
+    "currencyCode": "USD",
+    "description": "Cool new check",
+    "from": {
+      "id": "contact_fo3HwdeFZ3wwNuHFAgszHt",
+      "object": "contact",
+      "addressLine1": "123 MAIN STREET",
+      "addressLine2": null,
+      "addressStatus": "verified",
+      "city": "ATLANTA",
+      "companyName": "US Steel",
+      "country": "UNITED STATES",
+      "countryCode": "US",
+      "firstName": "John",
+      "lastName": "Quincy",
+      "postalOrZip": "12345",
+      "provinceOrState": "GA"
+    },
+    "letterHtml": "Hello {{to.firstName}}",
+    "memo": "Invoice 1233",
+    "number": 9667,
+    "sendDate": "2021-07-19T09:57:28.214Z",
+    "status": "ready",
+    "to": {
+      "id": "contact_f8NLBJXjV82HnM8emVow3r",
+      "object": "contact",
+      "addressLine1": "5454 WEST 34TH STREET",
+      "addressLine2": null,
+      "addressStatus": "verified",
+      "city": "INDIANAPOLIS",
+      "companyName": "Acme Rentals",
+      "country": "UNITED STATES",
+      "countryCode": "US",
+      "firstName": "Steve",
+      "lastName": "Smith",
+      "postalOrZip": "46224",
+      "provinceOrState": "IN"
+    },
+    "createdAt": "2021-07-19T09:57:28.220Z",
+    "updatedAt": "2021-07-19T09:57:28.220Z"
+  }
+}
+```
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "errors": [ "(Error message from PostGrid...)" ]
+}
+```
+
+It's important to remember that if the same Contact information is supplied
+as an existing Contact, PostGrid will not create a new Contact - simply
+reuse the one it already has.
+
+But there are other ways to create a check. You can use the Contact IDs,
+like:
+
+```typescript
+const postcard = await client.postcard.create({
+  description: 'Cool new check',
+  letterHTML: 'Hello {{to.firstName}}',
+  to: 'contact_f8NLBJXjV82HnM8emVow3r',
+  from: 'contact_fo3HwdeFZ3wwNuHFAgszHt',
+  bankAccount: 'bank_gMpKxPyiGzt1ZwACTmLHHn',
+  amount: 10000,
+  memo: 'Invoice 1233',
+  number: 9667,
+})
+```
+
+so that if you know the created Contact data, you can just pass in the IDs.
+Of course, you can mix-and-match as well.
+
+You can also use a standard Node `Buffer` to load up the letter source:
+
+```typescript
+import fs from 'fs'
+
+const doc = fs.readFileSync('/my/local/file.pdf')
+
+const postcard = await client.postcard.create({
+  description: 'Cool new check',
+  letterPDF: doc,
+  to: 'contact_f8NLBJXjV82HnM8emVow3r',
+  from: 'contact_fo3HwdeFZ3wwNuHFAgszHt',
+  bankAccount: 'bank_gMpKxPyiGzt1ZwACTmLHHn',
+  amount: 10000,
+  memo: 'Invoice 1233',
+  number: 9667,
+})
+```
+
+all of these are covered in the different forms of the PostGrid _Create Cheque_
+endpoints, but the Client detects the inputs and acts accordingly. You just
+have to provide the data.
+
+#### [Get a Check](https://docs.postgrid.com/#a289e66f-c4b0-42cb-903a-d479cbb27f59)
+
+```typescript
+const check = await client.check.get(id)
+```
+
+where `id` is the Postcard ID, like `cheque_7GrdUQPmbkAXJg8vLkJK9B`, in the
+above example, and the response will be something like the response to the
+`client.check.create()` function.
+
+#### [List Checks](https://docs.postgrid.com/#0faa9a01-bb54-4047-bd91-e24aa538c98b)
+
+```typescript
+const checks = await client.check.list()
+```
+
+This will list all the Cheques/Checks assoiated with this API Key, and will
+do so in the PostGrid List paging scheme of `limit` and `skip`. These
+parameters are optional, and if they are omitted, the defaults are:
+
+* `skip` is `0`
+* `limit` is `40`
+
+The response will be something like:
+
+```javascript
+{
+  "success": true,
+  "checks": {
+    "object": "list",
+    "limit": 40,
+    "skip": 0,
+    "totalCount": 3,
+    "data": [
+      {
+        "id": "cheque_1rLks7fM6nSC1jNpidv1fg",
+        "object": "cheque",
+        "live": false,
+        "amount": 10000,
+        "bankAccount": "bank_gMpKxPyiGzt1ZwACTmLHHn",
+        "currencyCode": "USD",
+        "description": "Cool new check",
+        "from": {
+          "id": "contact_fo3HwdeFZ3wwNuHFAgszHt",
+          "object": "contact",
+          "addressLine1": "123 MAIN STREET",
+          "addressLine2": null,
+          "addressStatus": "verified",
+          "city": "ATLANTA",
+          "companyName": "US Steel",
+          "country": "UNITED STATES",
+          "countryCode": "US",
+          "firstName": "John",
+          "lastName": "Quincy",
+          "postalOrZip": "12345",
+          "provinceOrState": "GA"
+        },
+        "letterHtml": "Hello {{to.firstName}}",
+        "memo": "Invoice 1233",
+        "number": 9667,
+        "sendDate": "2021-07-19T10:02:28.324Z",
+        "status": "ready",
+        "to": {
+          "id": "contact_f8NLBJXjV82HnM8emVow3r",
+          "object": "contact",
+          "addressLine1": "5454 WEST 34TH STREET",
+          "addressLine2": null,
+          "addressStatus": "verified",
+          "city": "INDIANAPOLIS",
+          "companyName": "Acme Rentals",
+          "country": "UNITED STATES",
+          "countryCode": "US",
+          "firstName": "Steve",
+          "lastName": "Smith",
+          "postalOrZip": "46224",
+          "provinceOrState": "IN"
+        },
+        "createdAt": "2021-07-19T10:02:28.327Z",
+        "updatedAt": "2021-07-19T10:02:28.327Z"
+      },
+      ...
+    ]
+  }
+}
+```
+
+#### [Progress a Test Cheque/Check](https://docs.postgrid.com/#1b2ec7da-980f-43f5-b72a-765100364b31)
+
+This function will move a Test Cheque/Check through the server-side processing
+steps, one at a time to allow the caller to verify the webhook calls. This
+is **_only_** available for Test Cheques/Checks.
+
+```typescript
+const move = await client.check.progress(id)
+```
+
+where `id` is the Cheque ID, like `cheque_7GrdUQPmbkAXJg8vLkJK9B`, in the
+above example, and the response will be similar to the response from
+`client.check.get(id)`.
+
+#### [Delete a Check](https://docs.postgrid.com/#f64aa571-58af-4504-a32f-8f0ced4806c2)
+
+This function will delete - or _Cancel_ a Cheque/Check that's not yet been sent.
+
+```typescript
+const drop = await client.check.delete(id)
+```
+
+where `id` is the Postcard ID, like `cheque_7GrdUQPmbkAXJg8vLkJK9B`, in the
+above example, and the response will be something like:
+
+```javascript
+{
+  "success": true,
+  "check": {
+    "id": "cheque_7GrdUQPmbkAXJg8vLkJK9B",
+    "object": "cheque",
     "deleted": true
   }
 }

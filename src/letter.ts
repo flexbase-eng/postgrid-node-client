@@ -132,7 +132,9 @@ export class LetterApi {
             case 'metadata':
               if (typeof v === 'object') {
                 Object.entries(v).forEach(([sk, sv]) => {
-                  form.append(`${k}[${sk}]`, sv)
+                  if (sv || sv === false || sv === 0 || sv === '') {
+                    form.append(`${k}[${sk}]`, sv)
+                  }
                 })
               } else {
                 form.append(k, v.toString())

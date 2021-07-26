@@ -52,7 +52,7 @@ export class WebhookApi {
   async get(id: string): Promise<{
     success: boolean,
     webhook?: Webhook,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
@@ -61,7 +61,7 @@ export class WebhookApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), webhook: resp.payload }
@@ -75,7 +75,7 @@ export class WebhookApi {
   async list(limit?: number, skip?: number): Promise<{
     success: boolean,
     webhooks?: WebhookList,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
@@ -85,7 +85,7 @@ export class WebhookApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return {
@@ -102,7 +102,7 @@ export class WebhookApi {
   async invocations(id: string, limit?: number, skip?: number): Promise<{
     success: boolean,
     invocations?: WebhookInvocationList,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
@@ -112,7 +112,7 @@ export class WebhookApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return {
@@ -136,7 +136,7 @@ export class WebhookApi {
   }): Promise<{
     success: boolean,
     webhook?: Webhook,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const body = webhook
     const resp = await this.client.fire(
@@ -147,7 +147,7 @@ export class WebhookApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), webhook: resp.payload }
@@ -169,7 +169,7 @@ export class WebhookApi {
   }): Promise<{
     success: boolean,
     webhook?: Webhook,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const body = webhook
     const resp = await this.client.fire(
@@ -180,7 +180,7 @@ export class WebhookApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), webhook: resp.payload }
@@ -194,7 +194,7 @@ export class WebhookApi {
   async delete(id: string): Promise<{
     success: boolean,
     webhook?: Webhook,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'DELETE',
@@ -203,7 +203,7 @@ export class WebhookApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), webhook: resp.payload }

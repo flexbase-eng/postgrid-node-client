@@ -44,7 +44,7 @@ export class ContactApi {
   async get(id: string): Promise<{
     success: boolean,
     contact?: Contact,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
@@ -53,7 +53,7 @@ export class ContactApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), contact: resp.payload }
@@ -67,7 +67,7 @@ export class ContactApi {
   async list(limit?: number, skip?: number): Promise<{
     success: boolean,
     contacts?: ContactList,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
@@ -77,7 +77,7 @@ export class ContactApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return {
@@ -109,7 +109,7 @@ export class ContactApi {
   }): Promise<{
     success: boolean,
     contact?: Contact,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const body = contact
     const resp = await this.client.fire(
@@ -120,7 +120,7 @@ export class ContactApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), contact: resp.payload }
@@ -134,7 +134,7 @@ export class ContactApi {
   async delete(id: string): Promise<{
     success: boolean,
     contact?: Contact,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'DELETE',
@@ -143,7 +143,7 @@ export class ContactApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), contact: resp.payload }

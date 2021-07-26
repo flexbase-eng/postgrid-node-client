@@ -45,7 +45,7 @@ export class PostcardApi {
   async get(id: string): Promise<{
     success: boolean,
     postcard?: Postcard,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
@@ -54,7 +54,7 @@ export class PostcardApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), postcard: resp.payload }
@@ -68,7 +68,7 @@ export class PostcardApi {
   async list(limit?: number, skip?: number): Promise<{
     success: boolean,
     postcards?: PostcardList,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
@@ -78,7 +78,7 @@ export class PostcardApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), postcards: resp.payload }
@@ -106,7 +106,7 @@ export class PostcardApi {
   }): Promise<{
     success: boolean,
     postcard?: Postcard,
-    errors?: PostGridError,
+    error?: PostGridError,
     message?: string,
   }> {
     let body = postcard
@@ -157,7 +157,7 @@ export class PostcardApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), postcard: resp.payload }
@@ -171,7 +171,7 @@ export class PostcardApi {
   async progress(id: string): Promise<{
     success: boolean,
     postcard?: Postcard,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'POST',
@@ -180,7 +180,7 @@ export class PostcardApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), postcard: resp.payload }
@@ -194,7 +194,7 @@ export class PostcardApi {
   async delete(id: string): Promise<{
     success: boolean,
     postcard?: Postcard,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'DELETE',
@@ -203,7 +203,7 @@ export class PostcardApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), postcard: resp.payload }

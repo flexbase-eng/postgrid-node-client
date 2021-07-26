@@ -125,7 +125,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 
@@ -307,7 +310,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 
@@ -572,7 +578,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 
@@ -827,7 +836,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 
@@ -1011,7 +1023,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 
@@ -1231,7 +1246,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 

@@ -46,7 +46,7 @@ export class BankAccountApi {
   async get(id: string): Promise<{
     success: boolean,
     account?: BankAccount,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
@@ -55,7 +55,7 @@ export class BankAccountApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), account: resp.payload }
@@ -69,7 +69,7 @@ export class BankAccountApi {
   async list(limit?: number, skip?: number): Promise<{
     success: boolean,
     accounts?: BankAccountList,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
@@ -79,7 +79,7 @@ export class BankAccountApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return {
@@ -113,7 +113,7 @@ export class BankAccountApi {
   }): Promise<{
     success: boolean,
     account?: BankAccount,
-    errors?: PostGridError,
+    error?: PostGridError,
     message?: string,
   }> {
     const form = new FormData()
@@ -142,7 +142,7 @@ export class BankAccountApi {
             } else {
               return {
                 success: false,
-                errors: mkError(
+                error: mkError(
                   "The provided value of 'signatureImage' could not be understood. " +
                   `The type of the 'signatureImage' value is: '${typeof v}'`
                 )
@@ -163,7 +163,7 @@ export class BankAccountApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), account: resp.payload }
@@ -177,7 +177,7 @@ export class BankAccountApi {
   async delete(id: string): Promise<{
     success: boolean,
     account?: BankAccount,
-    errors?: PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'DELETE',
@@ -186,7 +186,7 @@ export class BankAccountApi {
     if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), account: resp.payload }

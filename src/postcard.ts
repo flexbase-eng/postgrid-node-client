@@ -45,13 +45,13 @@ export class PostcardApi {
   async get(id: string): Promise<{
     success: boolean,
     postcard?: Postcard,
-    errors?: string[] | PostGridError,
+    errors?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
       `postcards/${id}`
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
         errors: resp?.payload?.error,
@@ -68,14 +68,14 @@ export class PostcardApi {
   async list(limit?: number, skip?: number): Promise<{
     success: boolean,
     postcards?: PostcardList,
-    errors?: string[] | PostGridError,
+    errors?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
       'postcards',
       { skip: skip || 0, limit: limit || 40 },
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
         errors: resp?.payload?.error,
@@ -106,7 +106,7 @@ export class PostcardApi {
   }): Promise<{
     success: boolean,
     postcard?: Postcard,
-    errors?: string[] | PostGridError,
+    errors?: PostGridError,
     message?: string,
   }> {
     let body = postcard
@@ -154,7 +154,7 @@ export class PostcardApi {
       'postcards',
       undefined,
       body)
-    if (resp?.response?.status === 422) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
         errors: resp?.payload?.error,
@@ -171,13 +171,13 @@ export class PostcardApi {
   async progress(id: string): Promise<{
     success: boolean,
     postcard?: Postcard,
-    errors?: string[] | PostGridError,
+    errors?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'POST',
       `postcards/${id}/progressions`,
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
         errors: resp?.payload?.error,
@@ -194,13 +194,13 @@ export class PostcardApi {
   async delete(id: string): Promise<{
     success: boolean,
     postcard?: Postcard,
-    errors?: string[] | PostGridError,
+    errors?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'DELETE',
       `postcards/${id}`
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
         errors: resp?.payload?.error,

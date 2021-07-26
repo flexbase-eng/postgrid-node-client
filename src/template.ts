@@ -32,13 +32,13 @@ export class TemplateApi {
   async get(id: string): Promise<{
     success: boolean,
     template?: Template,
-    errors?: string[] | PostGridError,
+    errors?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
       `templates/${id}`
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
         errors: resp?.payload?.error,
@@ -55,14 +55,14 @@ export class TemplateApi {
   async list(limit?: number, skip?: number): Promise<{
     success: boolean,
     templates?: TemplateList,
-    errors?: string[] | PostGridError,
+    errors?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
       'templates',
       { skip: skip || 0, limit: limit || 40 },
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
         errors: resp?.payload?.error,
@@ -86,7 +86,7 @@ export class TemplateApi {
   }): Promise<{
     success: boolean,
     template?: Template,
-    errors?: string[] | PostGridError,
+    errors?: PostGridError,
   }> {
     const body = template
     const resp = await this.client.fire(
@@ -94,7 +94,7 @@ export class TemplateApi {
       'templates',
       undefined,
       body)
-    if (resp?.response?.status === 422) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
         errors: resp?.payload?.error,
@@ -116,7 +116,7 @@ export class TemplateApi {
   }): Promise<{
     success: boolean,
     template?: Template,
-    errors?: string[] | PostGridError,
+    errors?: PostGridError,
   }> {
     const body = template
     const resp = await this.client.fire(
@@ -124,7 +124,7 @@ export class TemplateApi {
       `templates/${id}`,
       undefined,
       body)
-    if (resp?.response?.status === 422) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
         errors: resp?.payload?.error,
@@ -141,13 +141,13 @@ export class TemplateApi {
   async delete(id: string): Promise<{
     success: boolean,
     template?: Template,
-    errors?: string[] | PostGridError,
+    errors?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'DELETE',
       `templates/${id}`
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
         errors: resp?.payload?.error,

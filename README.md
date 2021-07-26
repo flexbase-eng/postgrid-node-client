@@ -61,7 +61,7 @@ where the options can include:
 * `webhookUrl` - the URL for all PostGrid updates to be sent
 * `webhookSecret` - the JWT encryption secret for the payload on the
   webhook so that it's safe in transmission back to the service.
-* `webhookEvents` - the array of strings that are the [events](https://docs.postgrid.com/#8ab384a4-2ff1-41ce-92fd-8c34fc6c3809) that this
+* `webhookEvents` - the array of strings that are the [events](https://docs.postgrid.com/#webhook-event-types) that this
   webhook is expected to receive from PostGrid.
 
 ### Contact Calls

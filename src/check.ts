@@ -49,16 +49,16 @@ export class CheckApi {
   async get(id: string): Promise<{
     success: boolean,
     check?: Check,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
       `cheques/${id}`
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), check: resp.payload }
@@ -72,17 +72,17 @@ export class CheckApi {
   async list(limit?: number, skip?: number): Promise<{
     success: boolean,
     checks?: CheckList,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
       'cheques',
       { skip: skip || 0, limit: limit || 40 },
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return {
@@ -116,7 +116,7 @@ export class CheckApi {
   }): Promise<{
     success: boolean,
     check?: Check,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
     message?: string,
   }> {
     const form = new FormData()
@@ -159,10 +159,10 @@ export class CheckApi {
       'cheques',
       undefined,
       form)
-    if (resp?.response?.status === 422) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), check: resp.payload }
@@ -176,16 +176,16 @@ export class CheckApi {
   async progress(id: string): Promise<{
     success: boolean,
     check?: Check,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'POST',
       `cheques/${id}/progressions`,
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), check: resp.payload }
@@ -199,16 +199,16 @@ export class CheckApi {
   async delete(id: string): Promise<{
     success: boolean,
     check?: Check,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'DELETE',
       `cheques/${id}`
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), check: resp.payload }

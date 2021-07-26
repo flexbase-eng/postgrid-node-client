@@ -46,16 +46,16 @@ export class LetterApi {
   async get(id: string): Promise<{
     success: boolean,
     letter?: Letter,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
       `letters/${id}`
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), letter: resp.payload }
@@ -69,17 +69,17 @@ export class LetterApi {
   async list(limit?: number, skip?: number): Promise<{
     success: boolean,
     letters?: LetterList,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
       'letters',
       { skip: skip || 0, limit: limit || 40 },
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return {
@@ -112,7 +112,7 @@ export class LetterApi {
   }): Promise<{
     success: boolean,
     letter?: Letter,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
     message?: string,
   }> {
     // set some reasonable defaults on the letter
@@ -164,10 +164,10 @@ export class LetterApi {
       'letters',
       undefined,
       body)
-    if (resp?.response?.status === 422) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), letter: resp.payload }
@@ -181,16 +181,16 @@ export class LetterApi {
   async progress(id: string): Promise<{
     success: boolean,
     letter?: Letter,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'POST',
       `letters/${id}/progressions`,
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), letter: resp.payload }
@@ -204,16 +204,16 @@ export class LetterApi {
   async delete(id: string): Promise<{
     success: boolean,
     letter?: Letter,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'DELETE',
       `letters/${id}`
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), letter: resp.payload }

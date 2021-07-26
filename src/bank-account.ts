@@ -29,6 +29,7 @@ export interface BankAccountList {
 
 import fs from 'fs'
 import FormData from 'form-data'
+import { mkError } from './'
 
 export class BankAccountApi {
   client: PostGrid;
@@ -45,16 +46,16 @@ export class BankAccountApi {
   async get(id: string): Promise<{
     success: boolean,
     account?: BankAccount,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
       `bank_accounts/${id}`
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), account: resp.payload }
@@ -68,17 +69,17 @@ export class BankAccountApi {
   async list(limit?: number, skip?: number): Promise<{
     success: boolean,
     accounts?: BankAccountList,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'GET',
       'bank_accounts',
       { skip: skip || 0, limit: limit || 40 },
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return {
@@ -112,7 +113,7 @@ export class BankAccountApi {
   }): Promise<{
     success: boolean,
     account?: BankAccount,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
     message?: string,
   }> {
     const form = new FormData()
@@ -141,10 +142,10 @@ export class BankAccountApi {
             } else {
               return {
                 success: false,
-                errors: [
-                  "The provided value of 'signatureImage' could not be understood.",
-                  `The type of the 'signatureImage' value is: '${typeof v}'`,
-                ]
+                error: mkError(
+                  "The provided value of 'signatureImage' could not be understood. " +
+                  `The type of the 'signatureImage' value is: '${typeof v}'`
+                )
               }
             }
             break
@@ -159,10 +160,10 @@ export class BankAccountApi {
       'bank_accounts',
       undefined,
       form)
-    if (resp?.response?.status === 422) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), account: resp.payload }
@@ -176,16 +177,16 @@ export class BankAccountApi {
   async delete(id: string): Promise<{
     success: boolean,
     account?: BankAccount,
-    errors?: string[] | PostGridError,
+    error?: PostGridError,
   }> {
     const resp = await this.client.fire(
       'DELETE',
       `bank_accounts/${id}`
     )
-    if (resp?.response?.status === 404) {
+    if (resp?.response?.status >= 400) {
       return {
         success: false,
-        errors: resp?.payload?.error,
+        error: resp?.payload?.error,
       }
     }
     return { success: (resp && !resp.payload?.error), account: resp.payload }

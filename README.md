@@ -61,7 +61,7 @@ where the options can include:
 * `webhookUrl` - the URL for all PostGrid updates to be sent
 * `webhookSecret` - the JWT encryption secret for the payload on the
   webhook so that it's safe in transmission back to the service.
-* `webhookEvents` - the array of strings that are the events that this
+* `webhookEvents` - the array of strings that are the [events](https://docs.postgrid.com/#webhook-event-types) that this
   webhook is expected to receive from PostGrid.
 
 ### Contact Calls
@@ -125,7 +125,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 
@@ -307,7 +310,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 
@@ -572,7 +578,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 
@@ -827,7 +836,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 
@@ -1011,7 +1023,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 
@@ -1231,7 +1246,10 @@ If there had been an error, the response would be:
 ```javascript
 {
   "success": false,
-  "errors": [ "(Error message from PostGrid...)" ]
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
 }
 ```
 

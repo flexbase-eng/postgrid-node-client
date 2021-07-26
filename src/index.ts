@@ -146,3 +146,15 @@ function isFormData(arg: any): boolean {
   }
   return ans
 }
+
+/*
+ * Convenience function to create a PostGridError based on a simple message
+ * from the Client code. This is an easy way to make PostGridError instances
+ * from the simple error messages we have in this code.
+ */
+export function mkError(message: string): PostGridError {
+  return {
+    type: 'client',
+    message,
+  }
+}

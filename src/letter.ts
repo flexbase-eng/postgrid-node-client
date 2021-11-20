@@ -1,3 +1,4 @@
+import path from 'path'
 import type { PostGrid, PostGridOptions, PostGridError } from './'
 import type { Contact } from './contact'
 
@@ -30,12 +31,15 @@ export interface LetterList {
 }
 
 import FormData from 'form-data'
+import { mkError } from './'
 
 export class LetterApi {
   client: PostGrid;
+  baseRoute: string;
 
   constructor(client: PostGrid, options?: PostGridOptions) {  // eslint-disable-line no-unused-vars
     this.client = client
+    this.baseRoute = 'print-mail/v1/'
   }
 
   /*
@@ -48,9 +52,15 @@ export class LetterApi {
     letter?: Letter,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      `letters/${id}`
+      path.join(this.baseRoute, 'letters', id),
+      { 'x-api-key': this.client.apiKeys.mail },
     )
     if (resp?.response?.status >= 400) {
       return {
@@ -71,9 +81,15 @@ export class LetterApi {
     letters?: LetterList,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      'letters',
+      path.join(this.baseRoute, 'letters'),
+      { 'x-api-key': this.client.apiKeys.mail },
       { skip: skip || 0, limit: limit || 40 },
     )
     if (resp?.response?.status >= 400) {
@@ -115,6 +131,10 @@ export class LetterApi {
     error?: PostGridError,
     message?: string,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
     // set some reasonable defaults on the letter
     letter.color = letter.color || false
     letter.doubleSided = letter.doubleSided || false
@@ -161,7 +181,8 @@ export class LetterApi {
     }
     const resp = await this.client.fire(
       'POST',
-      'letters',
+      path.join(this.baseRoute, 'letters'),
+      { 'x-api-key': this.client.apiKeys.mail },
       undefined,
       body)
     if (resp?.response?.status >= 400) {
@@ -183,9 +204,15 @@ export class LetterApi {
     letter?: Letter,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'POST',
-      `letters/${id}/progressions`,
+      path.join(this.baseRoute, 'letters', id, 'progressions'),
+      { 'x-api-key': this.client.apiKeys.mail },
     )
     if (resp?.response?.status >= 400) {
       return {
@@ -206,9 +233,15 @@ export class LetterApi {
     letter?: Letter,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'DELETE',
-      `letters/${id}`
+      path.join(this.baseRoute, 'letters', id),
+      { 'x-api-key': this.client.apiKeys.mail },
     )
     if (resp?.response?.status >= 400) {
       return {

@@ -1,7 +1,10 @@
 import { PostGrid } from '../src/index'
 
 (async () => {
-  const client = new PostGrid(process.env.POSTGRID_API_KEY!)
+  const client = new PostGrid({
+    mail: process.env.POSTGRID_MAIL_API_KEY,
+    addr: process.env.POSTGRID_ADDR_API_KEY,
+  })
 
   console.log('creating a single Postcard...')
   const what = {
@@ -53,7 +56,7 @@ import { PostGrid } from '../src/index'
   console.log('listing the first page of 40 Postcards...')
   const tre = await client.postcard.list()
   if (tre.success) {
-    console.log('Success!')
+    console.log(`Success! The list contained ${tre.postcards!.data!.length} postcards...`)
   } else {
     console.log('Error! Listing the postcards failed, and the output is:')
     console.log(tre)

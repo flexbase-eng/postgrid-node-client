@@ -1,7 +1,10 @@
 import { PostGrid } from '../src/index'
 
 (async () => {
-  const client = new PostGrid(process.env.POSTGRID_API_KEY!)
+  const client = new PostGrid({
+    mail: process.env.POSTGRID_MAIL_API_KEY,
+    addr: process.env.POSTGRID_ADDR_API_KEY,
+  })
 
   console.log('creating a single Bank Account...')
   const who = {

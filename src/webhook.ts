@@ -1,3 +1,4 @@
+import path from 'path'
 import type { PostGrid, PostGridOptions, PostGridError } from './'
 
 export interface Webhook {
@@ -37,11 +38,15 @@ export interface WebhookInvocationList {
   data: WebhookInvocation[];
 }
 
+import { mkError } from './'
+
 export class WebhookApi {
   client: PostGrid;
+  baseRoute: string;
 
   constructor(client: PostGrid, options?: PostGridOptions) {  // eslint-disable-line no-unused-vars
     this.client = client
+    this.baseRoute = 'print-mail/v1/'
   }
 
   /*
@@ -54,9 +59,15 @@ export class WebhookApi {
     webhook?: Webhook,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      `webhooks/${id}`
+      path.join(this.baseRoute, 'webhooks', id),
+      { 'x-api-key': this.client.apiKeys.mail },
     )
     if (resp?.response?.status >= 400) {
       return {
@@ -77,9 +88,15 @@ export class WebhookApi {
     webhooks?: WebhookList,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      'webhooks',
+      path.join(this.baseRoute, 'webhooks'),
+      { 'x-api-key': this.client.apiKeys.mail },
       { skip: skip || 0, limit: limit || 40 },
     )
     if (resp?.response?.status >= 400) {
@@ -104,9 +121,15 @@ export class WebhookApi {
     invocations?: WebhookInvocationList,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      `webhooks/${id}/invocations`,
+      path.join(this.baseRoute, 'webhooks', id, 'invocations'),
+      { 'x-api-key': this.client.apiKeys.mail },
       { skip: skip || 0, limit: limit || 40 },
     )
     if (resp?.response?.status >= 400) {
@@ -138,10 +161,16 @@ export class WebhookApi {
     webhook?: Webhook,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const body = webhook
     const resp = await this.client.fire(
       'POST',
-      'webhooks',
+      path.join(this.baseRoute, 'webhooks'),
+      { 'x-api-key': this.client.apiKeys.mail },
       undefined,
       body)
     if (resp?.response?.status >= 400) {
@@ -171,10 +200,16 @@ export class WebhookApi {
     webhook?: Webhook,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const body = webhook
     const resp = await this.client.fire(
       'POST',
-      `webhooks/${id}`,
+      path.join(this.baseRoute, 'webhooks', id),
+      { 'x-api-key': this.client.apiKeys.mail },
       undefined,
       body)
     if (resp?.response?.status >= 400) {
@@ -196,9 +231,15 @@ export class WebhookApi {
     webhook?: Webhook,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'DELETE',
-      `webhooks/${id}`
+      path.join(this.baseRoute, 'webhooks', id),
+      { 'x-api-key': this.client.apiKeys.mail },
     )
     if (resp?.response?.status >= 400) {
       return {

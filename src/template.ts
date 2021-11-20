@@ -1,3 +1,4 @@
+import path from 'path'
 import type { PostGrid, PostGridOptions, PostGridError } from './'
 
 export interface Template {
@@ -17,11 +18,15 @@ export interface TemplateList {
   data: Template[];
 }
 
+import { mkError } from './'
+
 export class TemplateApi {
   client: PostGrid;
+  baseRoute: string;
 
   constructor(client: PostGrid, options?: PostGridOptions) {  // eslint-disable-line no-unused-vars
     this.client = client
+    this.baseRoute = 'print-mail/v1/'
   }
 
   /*
@@ -34,9 +39,15 @@ export class TemplateApi {
     template?: Template,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      `templates/${id}`
+      path.join(this.baseRoute, 'templates', id),
+      { 'x-api-key': this.client.apiKeys.mail },
     )
     if (resp?.response?.status >= 400) {
       return {
@@ -57,9 +68,15 @@ export class TemplateApi {
     templates?: TemplateList,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      'templates',
+      path.join(this.baseRoute, 'templates'),
+      { 'x-api-key': this.client.apiKeys.mail },
       { skip: skip || 0, limit: limit || 40 },
     )
     if (resp?.response?.status >= 400) {
@@ -88,10 +105,16 @@ export class TemplateApi {
     template?: Template,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const body = template
     const resp = await this.client.fire(
       'POST',
-      'templates',
+      path.join(this.baseRoute, 'templates'),
+      { 'x-api-key': this.client.apiKeys.mail },
       undefined,
       body)
     if (resp?.response?.status >= 400) {
@@ -118,10 +141,16 @@ export class TemplateApi {
     template?: Template,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const body = template
     const resp = await this.client.fire(
       'POST',
-      `templates/${id}`,
+      path.join(this.baseRoute, 'templates', id),
+      { 'x-api-key': this.client.apiKeys.mail },
       undefined,
       body)
     if (resp?.response?.status >= 400) {
@@ -143,9 +172,15 @@ export class TemplateApi {
     template?: Template,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'DELETE',
-      `templates/${id}`
+      path.join(this.baseRoute, 'templates', id),
+      { 'x-api-key': this.client.apiKeys.mail },
     )
     if (resp?.response?.status >= 400) {
       return {

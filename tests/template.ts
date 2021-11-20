@@ -1,7 +1,10 @@
 import { PostGrid } from '../src/index'
 
 (async () => {
-  const client = new PostGrid(process.env.POSTGRID_API_KEY!)
+  const client = new PostGrid({
+    mail: process.env.POSTGRID_MAIL_API_KEY,
+    addr: process.env.POSTGRID_ADDR_API_KEY,
+  })
 
   console.log('creating a single Template...')
   const what = {
@@ -30,7 +33,7 @@ import { PostGrid } from '../src/index'
   console.log('listing the first page of 40 Templates...')
   const tre = await client.template.list()
   if (tre.success) {
-    console.log('Success!')
+    console.log(`Success! The list contained ${tre.templates!.data!.length} templates...`)
   } else {
     console.log('Error! Listing the templates failed, and the output is:')
     console.log(tre)

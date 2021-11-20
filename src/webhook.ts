@@ -38,7 +38,7 @@ export interface WebhookInvocationList {
   data: WebhookInvocation[];
 }
 
-import { mkError } from './'
+import { NO_MAIL_API_KEY } from './'
 
 export class WebhookApi {
   client: PostGrid;
@@ -61,7 +61,7 @@ export class WebhookApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(
@@ -90,7 +90,7 @@ export class WebhookApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(
@@ -123,7 +123,7 @@ export class WebhookApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(
@@ -163,7 +163,7 @@ export class WebhookApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const body = webhook
@@ -202,7 +202,7 @@ export class WebhookApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const body = webhook
@@ -233,7 +233,7 @@ export class WebhookApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(

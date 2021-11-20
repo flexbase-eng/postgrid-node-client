@@ -30,7 +30,7 @@ export interface BankAccountList {
 
 import fs from 'fs'
 import FormData from 'form-data'
-import { mkError } from './'
+import { mkError, NO_MAIL_API_KEY } from './'
 
 export class BankAccountApi {
   client: PostGrid;
@@ -53,7 +53,7 @@ export class BankAccountApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(
@@ -82,7 +82,7 @@ export class BankAccountApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(
@@ -133,7 +133,7 @@ export class BankAccountApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const form = new FormData()
@@ -202,7 +202,7 @@ export class BankAccountApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(

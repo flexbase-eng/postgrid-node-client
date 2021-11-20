@@ -30,7 +30,7 @@ export interface PostcardList {
 }
 
 import FormData from 'form-data'
-import { mkError } from './'
+import { NO_MAIL_API_KEY } from './'
 
 export class PostcardApi {
   client: PostGrid;
@@ -53,7 +53,7 @@ export class PostcardApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(
@@ -82,7 +82,7 @@ export class PostcardApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(
@@ -127,7 +127,7 @@ export class PostcardApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     let body = postcard
@@ -197,7 +197,7 @@ export class PostcardApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(
@@ -226,7 +226,7 @@ export class PostcardApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.mail) {
-      return { success: false, error: mkError('Missing PostGrid Print-Mail API Key!') }
+      return NO_MAIL_API_KEY
     }
     // ...and now we can make the call...
     const resp = await this.client.fire(

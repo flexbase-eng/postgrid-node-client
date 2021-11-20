@@ -179,3 +179,19 @@ export function mkError(message: string): PostGridError {
     message,
   }
 }
+
+/*
+ * Each function in each Api class needs to test and make sure that the
+ * Client has the appropriate API Key for PostGrid to do what it needs
+ * to do. So rather than duplicate that code and structure, we simply
+ * have it here, so each of the API Keys, and import it in each module.
+ */
+export const NO_ADDR_API_KEY = {
+  success: false,
+  error: mkError('Missing PostGrid Address API Key!'),
+}
+
+export const NO_MAIL_API_KEY = {
+  success: false,
+  error: mkError('Missing PostGrid Print-Mail API Key!'),
+}

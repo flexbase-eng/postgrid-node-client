@@ -26,7 +26,7 @@ export interface CityState {
   country?: string;
 }
 
-import { mkError } from './'
+import { NO_ADDR_API_KEY } from './'
 
 export class AddressApi {
   client: PostGrid;
@@ -54,7 +54,7 @@ export class AddressApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.addr) {
-      return { success: false, error: mkError('Missing PostGrid Address API Key!') }
+      return NO_ADDR_API_KEY
     }
     // ... now we can make the call...
     const resp = await this.client.fire(
@@ -99,11 +99,7 @@ export class AddressApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.addr) {
-      return {
-        success: false,
-        verified: false,
-        error: mkError('Missing PostGrid Address API Key!'),
-      }
+      return { ...NO_ADDR_API_KEY, verified: false }
     }
     // ... now we can make the call...
     const resp = await this.client.fire(
@@ -165,7 +161,7 @@ export class AddressApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.addr) {
-      return { success: false, error: mkError('Missing PostGrid Address API Key!') }
+      return NO_ADDR_API_KEY
     }
     // ... now we can make the call...
     const resp = await this.client.fire(
@@ -236,7 +232,7 @@ export class AddressApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.addr) {
-      return { success: false, error: mkError('Missing PostGrid Address API Key!') }
+      return NO_ADDR_API_KEY
     }
     // ... now we can make the call...
     const resp = await this.client.fire(
@@ -331,7 +327,7 @@ export class AddressApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.addr) {
-      return { success: false, error: mkError('Missing PostGrid Address API Key!') }
+      return NO_ADDR_API_KEY
     }
     // ... now we can make the call...
     const resp = await this.client.fire(
@@ -406,7 +402,7 @@ export class AddressApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.addr) {
-      return { success: false, error: mkError('Missing PostGrid Address API Key!') }
+      return NO_ADDR_API_KEY
     }
     // ... now we can make the call...
     const resp = await this.client.fire(
@@ -459,7 +455,7 @@ export class AddressApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.addr) {
-      return { success: false, error: mkError('Missing PostGrid Address API Key!') }
+      return NO_ADDR_API_KEY
     }
     // ... now we can make the call...
     const resp = await this.client.fire(
@@ -509,7 +505,7 @@ export class AddressApi {
   }> {
     // make sure we have the API Key for this call
     if (!this.client.apiKeys.addr) {
-      return { success: false, error: mkError('Missing PostGrid Address API Key!') }
+      return NO_ADDR_API_KEY
     }
     // ... now we can make the call...
     const resp = await this.client.fire(

@@ -1,3 +1,4 @@
+import path from 'path'
 import type { PostGrid, PostGridOptions, PostGridError } from './'
 
 export interface BankAccount {
@@ -29,13 +30,15 @@ export interface BankAccountList {
 
 import fs from 'fs'
 import FormData from 'form-data'
-import { mkError } from './'
+import { mkError, NO_MAIL_API_KEY } from './'
 
 export class BankAccountApi {
   client: PostGrid;
+  baseRoute: string;
 
   constructor(client: PostGrid, options?: PostGridOptions) {  // eslint-disable-line no-unused-vars
     this.client = client
+    this.baseRoute = 'print-mail/v1/'
   }
 
   /*
@@ -48,9 +51,15 @@ export class BankAccountApi {
     account?: BankAccount,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return NO_MAIL_API_KEY
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      `bank_accounts/${id}`
+      path.join(this.baseRoute, 'bank_accounts', id),
+      { 'x-api-key': this.client.apiKeys.mail }
     )
     if (resp?.response?.status >= 400) {
       return {
@@ -71,9 +80,15 @@ export class BankAccountApi {
     accounts?: BankAccountList,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return NO_MAIL_API_KEY
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      'bank_accounts',
+      path.join(this.baseRoute, 'bank_accounts'),
+      { 'x-api-key': this.client.apiKeys.mail },
       { skip: skip || 0, limit: limit || 40 },
     )
     if (resp?.response?.status >= 400) {
@@ -116,6 +131,11 @@ export class BankAccountApi {
     error?: PostGridError,
     message?: string,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return NO_MAIL_API_KEY
+    }
+    // ...and now we can make the call...
     const form = new FormData()
     for (const [k, v] of Object.entries(bankAccount)) {
       // only add in the entries that have a non-null or defined, value...
@@ -157,7 +177,8 @@ export class BankAccountApi {
     }
     const resp = await this.client.fire(
       'POST',
-      'bank_accounts',
+      path.join(this.baseRoute, 'bank_accounts'),
+      { 'x-api-key': this.client.apiKeys.mail },
       undefined,
       form)
     if (resp?.response?.status >= 400) {
@@ -179,9 +200,15 @@ export class BankAccountApi {
     account?: BankAccount,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return NO_MAIL_API_KEY
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'DELETE',
-      `bank_accounts/${id}`
+      path.join(this.baseRoute, 'bank_accounts', id),
+      { 'x-api-key': this.client.apiKeys.mail }
     )
     if (resp?.response?.status >= 400) {
       return {

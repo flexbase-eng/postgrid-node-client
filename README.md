@@ -3,9 +3,16 @@
 `postgrid-node-client` is a Node/JS and TypeScript Client for
 [PostGrid](https://postgrid.com) that allows you to use normal Node
 syntax to send PDFs, and other documents, through Postal Delivery to
-recipients. [PostGrid](https://postgrid.com) has a set of REST
-[endpoints](https://docs.postgrid.com/#test-mode)
-but this affords some nice convenience features for the Node developer.
+recipients. The second service [PostGrid](https://postgrid.com) offers
+is the Address Verification and Autocomplete. That, too, is covered in
+this client, but [PostGrid](https://postgrid.com) requires two API Keys -
+one for each service, so it will be important to keep them straight in
+the set-up of the Client, below. [PostGrid](https://postgrid.com) has
+a set of REST [endpoints](https://docs.postgrid.com/#test-mode) for
+the Print-Mail service, and another set of REST
+[endpoints](https://avdocs.postgrid.com/) for the Address
+Verification service. This Node client just
+affords some nice convenience features for the Node developer.
 
 ## Install
 
@@ -18,19 +25,29 @@ $ npm install postgrid-node-client
 
 This README isn't going to cover all the specifics of what PostGrid is,
 and how to use it - it's targeted as a _companion_ to the PostGrid developer
-[docs](https://docs.postgrid.com/#test-mode) that explain each of the endpoints
-and how the general PostGrid workflow works.
+Print-Mail [docs](https://docs.postgrid.com/#test-mode), and the Address
+Verification [docs](https://avdocs.postgrid.com/) that explain each
+of the endpoints and how the general PostGrid workflow works.
 
 However, we'll put in plenty of examples so that it's clear how to use this
-library to interact with PostGrid.
+library to interact with both PostGrid services.
 
-### Getting your API Key
+### Getting your API Keys
 
-As documented on the PostGrid site, the first step is getting an API Key
-for the calls to PostGrid. This is available on their Dashboard
-[page](https://dashboard.postgrid.com/dashboard), once you login. For the
-rest of this document, the API Key will be seen as: `[Your API Key]`, and will
-need to be replaced with the API Key you obtain from the site.
+As documented on the PostGrid sites - one for the Print-Mail, and one for the
+Address Verification, the first step is getting an API Key for each service.
+This is available on the Print-Mail Dashboard
+[page](https://dashboard.postgrid.com/dashboard), and on the Address
+Verification Dashboard
+[page](https://app.postgrid.com/dashboard), once you login to each
+of the PostGrid services. For the rest of this document, the API Keys will
+be seen as: `[Your Mail API Key]` and the Print-Mail service, and
+`[Your Addr API Key]` and the Address Verification service, and will
+need to be replaced with the API Keys you obtain from the site.
+
+If you only subscribe to one service - just get that key. The Client is
+smart enough to return an error on the calls if you do not have the
+appropriate API Key for that call.
 
 ### Creating the Client
 
@@ -39,15 +56,32 @@ construction of the client is:
 
 ```typescript
 import { PostGrid } from 'postgrid-node-client'
-const client = new PostGrid('[Your API Key]')
+const client = new PostGrid({
+  mail: '[Your Mail API Key]',
+  addr: '[Your Addr API Key]',
+})
+```
+
+and it's not necessary that you supply _both_ API Keys if you only have
+a subscription to one of the services. Just fill in the one you have.
+
+There is a legacy mode where the Print-Mail functions are available
+by just supplying the API Key for that service. That constructor looks
+like:
+
+```typescript
+import { PostGrid } from 'postgrid-node-client'
+const client = new PostGrid('[Your Mail API Key]')
 ```
 
 If you'd like to provide the webhook URL in the constructor, you can do that
 with:
 
 ```typescript
-const client = new PostGrid(
-  '[Your API Key]',
+const client = new PostGrid({
+    mail: '[Your Mail API Key]',
+    addr: '[Your Addr API Key]',
+  },
   {
     webhookUrl: 'https://my.service.com/postgrid/callback',
     webhookSecret: 'abc123456the-tall-brown-bear',
@@ -1355,6 +1389,467 @@ above example, and the response will be something like:
     "id": "webhook_rqjK6m3T71butzwSd7zU4N",
     "object": "webhook",
     "deleted": true
+  }
+}
+```
+
+### Address Verification Calls
+
+The PostGrid Address Verification is documented on this
+[page](https://avdocs.postgrid.com/#intro) and
+has both single, and batch address verification, City, State lookup from
+a Postal Code, and Address Suggestion endpoints.
+
+#### [Get Lookup Info](https://avdocs.postgrid.com/#3941f8c1-072e-47f4-8906-56295502cf6e)
+
+PostGrid allows some free address lookups, and this call is an easy call
+to make to get the status of those free lookups. The call looks something
+like this:
+
+```typescript
+const info = await client.address.lookupInfo()
+```
+
+The response will be something like:
+
+```javascript
+{
+  "success": true,
+  "info": {
+    "status": 'success',
+    "message": 'Successfully retrieved addver info.',
+    "data": { freeLimit: 500, used: 5 }
+  }
+}
+```
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "verified": false,
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
+}
+```
+
+#### [Verify an Address](https://avdocs.postgrid.com/#1061f2ea-00ee-4977-99da-a54872de28c2)
+
+The PostGrid freeform address call allows the user to enter addresses like:
+
+```typescript
+'2929 Eagledale Dr, Indianapolis, IN'
+'3288 Tara Ln, Indianapolis, IN'
+```
+
+and so on. These will then be parsed, and verified, if possible by PostGrid.
+This function allows for both _freeform_ addresses and _structured_ addresses,
+of the form:
+
+```typescript
+{
+  line1: '3288 Tara Ln',
+  city: 'Indianapolis',
+  postalOrZip: '46224',
+  provinceOrState: 'IN',
+}
+```
+
+The basic call looks something like this:
+
+```typescript
+const address = await client.address.verify('3288 Tara Ln, Indianapolis, IN')
+```
+
+or:
+
+```typescript
+const address = await client.address.verify({
+  line1: '3288 Tara Ln',
+  city: 'Indianapolis',
+  postalOrZip: '46224',
+  provinceOrState: 'IN',
+})
+```
+
+The response will be something like:
+
+```javascript
+{
+  "success": true,
+  "verified": true,
+  "address": {
+    "status": 'success',
+    "message": 'Address verification processed.',
+    "data": {
+      "line1": '3288 Tara Ln',
+      "city": 'Indianapolis',
+      "provinceOrState": 'IN',
+      "postalOrZip": '46224',
+      "zipPlus4": '2231',
+      "country": 'us',
+      "countryName": 'UNITED STATES',
+      "errors": {},
+      "status": 'verified'
+    }
+  }
+}
+```
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "verified": false,
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
+}
+```
+
+#### [Get Autocomplete Previews](https://avdocs.postgrid.com/#a7c9e3d6-6fb1-4e5f-85da-ab233a264297)
+
+Given just a street address, and an optional `country`, the autocomplete
+previews function will return a list of _partial_ addresses of the form:
+
+```typescript
+{
+  line1: string;
+  city?: string;
+  provinceOrState?: string;
+}
+```
+
+This isn't strictly what is returned from PostGrid, but this client is
+trying to simplify the different data models on the return sets, so we
+have attempted to model it after the structured address as well.
+
+The basic call looks something like this:
+
+```typescript
+const list = await client.address.autocompletePreviews('77 main st')
+```
+
+The response will be something like:
+
+```javascript
+{
+  "success": true,
+  "previews": {
+    "status": 'success',
+    "message": 'Retrieved verified address completions successfully.',
+    "data": [
+      { "line1": '77 N MAIN ST', "city": undefined, "provinceOrState": 'UT' },
+      { "line1": '77 S MAIN ST', "city": undefined, "provinceOrState": 'UT' },
+      { "line1": '77 N MAIN ST', "city": undefined, "provinceOrState": 'UT' },
+      { "line1": '77 S MAIN ST', "city": undefined, "provinceOrState": 'UT' },
+      { "line1": '77 E MAIN ST', "city": undefined, "provinceOrState": 'UT' },
+      { "line1": '77 W MAIN ST', "city": undefined, "provinceOrState": 'UT' },
+      { "line1": '77 N MAIN ST', "city": 'ABERDEEN', "provinceOrState": 'ID' },
+      { "line1": '77 S MAIN ST', "city": 'ABERDEEN', "provinceOrState": 'ID' },
+      { "line1": '77 N MAIN ST', "city": 'ABERDEEN', "provinceOrState": 'SD' },
+      { "line1": '77 S MAIN ST', "city": 'ABERDEEN', "provinceOrState": 'SD' }
+    ]
+  }
+}
+```
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "verified": false,
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
+}
+```
+
+#### [Autocomplete an Address](https://avdocs.postgrid.com/#ef1764c6-d9e3-4caa-85d0-7694ec334bdb)
+
+Given an address, city and state - such as you'd get from a _Preview_, above,
+you can get the complete address with a call that looks something like this:
+
+```typescript
+const info = await client.address.autocompleteAddress({
+  line1: '77 S MAIN ST',
+  city: 'ABERDEEN',
+  provinceOrState: 'SD',
+})
+```
+
+The response will be something like:
+
+```javascript
+{
+  "success": true,
+  "previews": {
+    "status": 'success',
+    "message": 'Retrieved verified address completions successfully.',
+    "data": [
+      {
+        line1: '77 S MAIN ST',
+        city: 'ABERDEEN',
+        provinceOrState: 'SD',
+        postalOrZip: '57401',
+        country: 'US'
+      }
+    ]
+  }
+}
+```
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "verified": false,
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
+}
+```
+
+#### [Batch Verify Addresses](https://avdocs.postgrid.com/#94520412-5072-4f5a-a2e2-49981b66a347)
+
+Starting with either a freeform or structured address, this function can
+return each of the addresses, parsed - if necessary, and then individually
+verified, and tagged. The call can look something like this:
+
+```typescript
+const info = await client.address.batchVerify([
+  '3288 Tara Ln, Indianapolis, IN 46224',
+  '3000 Tara Ln, Indianapolis, IN 46224',
+  {
+    line1: '77 S MAIN ST',
+    city: 'ABERDEEN',
+    provinceOrState: 'SD',
+    postalOrZip: '57401',
+  },
+])
+```
+
+In this example, the middle address is **_not_** valid, and the response
+will be something like:
+
+```javascript
+{
+  "success": true,
+  "addresses": {
+    "status": 'success',
+    "message": 'Verified address batch successfully.',
+    "data": [
+      {
+        "line1": '3288 Tara Ln',
+        "city": 'Indianapolis',
+        "postalOrZip": '46224',
+        "provinceOrState": 'IN',
+        "country": 'us',
+        "countryName": 'UNITED STATES',
+        "zipPlus4": '2231',
+        "status": 'verified',
+        "errors": {}
+      },
+      {
+        "line1": '3000 Tara Ln  ',
+        "city": 'Indianapolis',
+        "postalOrZip": '46224',
+        "provinceOrState": 'in',
+        "status": 'failed',
+        "errors": {}
+      },
+      {
+        "line1": '77 S Main St',
+        "city": 'Aberdeen',
+        "postalOrZip": '57401',
+        "provinceOrState": 'SD',
+        "country": 'us',
+        "countryName": 'UNITED STATES',
+        "zipPlus4": '4218',
+        "status": 'verified',
+        "errors": {}
+      }
+    ]
+  }
+}
+```
+
+Where it's important to note that the `status` of the middle Address in the
+returned Array is `'failed'` - meaning taht the address provided could not
+by verified.
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "verified": false,
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
+}
+```
+
+
+#### [Suggest Addresses](https://avdocs.postgrid.com/#90361258-5526-4dd9-b6e6-faa83758b3c1)
+
+At times, you may have an address, either freeform, or structured, that
+might not be exactly right, and you need to see if there are addresses
+that are _close_ to that address - to see if you can find a match.
+This is the purpose of this function - to take an _estimated address_ and
+return the nearest hits.
+
+The call looks something like this:
+
+```typescript
+const info = await client.address.suggestAddresses({
+  line1: '77 MAIN ST',
+  city: 'ABERDEEN',
+  provinceOrState: 'SD',
+})
+```
+
+And the response will be something like:
+
+```javascript
+{
+  "success": true,
+  "addresses": {
+    "status": 'success',
+    "message": 'Address suggestions retrieved successfully.',
+    "data": [
+      {
+        "city": 'Aberdeen',
+        "country": 'us',
+        "countryName": 'UNITED STATES',
+        "errors": {},
+        "line1": '77 N Main St',
+        "postalOrZip": '57401',
+        "provinceOrState": 'SD',
+        "status": 'verified',
+        "zipPlus4": '3428'
+      },
+      {
+        "city": 'Aberdeen',
+        "country": 'us',
+        "countryName": 'UNITED STATES',
+        "errors": {},
+        "line1": '77 S Main St',
+        "postalOrZip": '57401',
+        "provinceOrState": 'SD',
+        "status": 'verified',
+        "zipPlus4": '4218'
+      },
+      ...
+    },
+  ]
+  }
+}
+```
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "verified": false,
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
+}
+```
+
+#### [Parse an Address](https://avdocs.postgrid.com/#cd929454-227c-4a31-9a0b-7896099e52d1)
+
+PostGrid can take a freeform address and simply parse it into it's
+components without verification, and the call looks something like this:
+
+```typescript
+const info = await client.address.parseAddress('3288 Tara Ln, Indianapolis, IN 46224')
+```
+
+And the response will be something like:
+
+```javascript
+{
+  "success": true,
+  "address": {
+    "status": 'success',
+    "message": 'Success.',
+    "data": {
+      "city": 'indianapolis',
+      "houseNumber": '3288',
+      "postcode": '46224',
+      "road": 'tara ln',
+      "state": 'in'
+    }
+  }
+}
+```
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "verified": false,
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
+  }
+}
+```
+
+#### [Look up City/State from Postal Code](https://avdocs.postgrid.com/#10bac08c-301f-4441-af95-0042c25b4298)
+
+At times, you have the postal code, and need to know the city and state
+of that code. This function is designed for that, with a call that looks
+something like this:
+
+```typescript
+const info = await client.address.lookupCityState('60540')
+```
+
+And the response will be something like:
+
+```javascript
+{
+  "success": true,
+  "address": {
+    "status": 'success',
+    "message": 'Success.',
+    "data": {
+      "city": 'NAPERVILLE',
+      "provinceOrState": 'IL'
+    }
+  }
+}
+```
+
+Where it's important to note that the `status` of the middle Address in the
+returned Array is `'failed'` - meaning taht the address provided could not
+by verified.
+
+If there had been an error, the response would be:
+
+```javascript
+{
+  "success": false,
+  "verified": false,
+  "error": {
+    "type": "PostGrid_type",
+    "message": "(Error message from PostGrid...)"
   }
 }
 ```

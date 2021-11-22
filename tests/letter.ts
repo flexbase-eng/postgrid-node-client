@@ -1,7 +1,10 @@
 import { PostGrid } from '../src/index'
 
 (async () => {
-  const client = new PostGrid(process.env.POSTGRID_API_KEY!)
+  const client = new PostGrid({
+    mail: process.env.POSTGRID_MAIL_API_KEY,
+    addr: process.env.POSTGRID_ADDR_API_KEY,
+  })
 
   console.log('creating a single Letter...')
   const what = {
@@ -51,7 +54,7 @@ import { PostGrid } from '../src/index'
   console.log('listing the first page of 40 Letters...')
   const tre = await client.letter.list()
   if (tre.success) {
-    console.log('Success!')
+    console.log(`Success! ${tre.letters!.data!.length} letters in the list`)
   } else {
     console.log('Error! Listing the letters failed, and the output is:')
     console.log(tre)

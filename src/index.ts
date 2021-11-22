@@ -10,10 +10,23 @@ import { PostcardApi } from './postcard'
 import { BankAccountApi } from './bank-account'
 import { CheckApi } from './check'
 import { WebhookApi } from './webhook'
+import { AddressApi } from './address'
 
 const ClientVersion = require('../package.json').version
 const PROTOCOL = 'https'
-const POSTGRID_HOST = 'api.postgrid.com/print-mail/v1/'
+const POSTGRID_HOST = 'api.postgrid.com'
+
+/*
+ * PostGrid has two different internal systems that have not - as yet - been
+ * brought together under one roof. So it's possible to have an API Key for
+ * just the print-mail part, or just the address part, or both. So we need
+ * to have a way to handle these two keys, and apply the right one at the
+ * right time.
+ */
+export interface PostGridApiKeys {
+  mail?: string;
+  addr?: string;
+}
 
 /*
  * These are the acceptable options to the creation of the Client:
@@ -27,7 +40,7 @@ const POSTGRID_HOST = 'api.postgrid.com/print-mail/v1/'
  */
 export interface PostGridOptions {
   host?: string;
-  apiKey?: string;
+  apiKeys: PostGridApiKeys;
   webhookUrl?: string;
   webhookSecret?: string;
   webhookEvents?: string[];
@@ -51,7 +64,7 @@ export interface PostGridError {
  */
 export class PostGrid {
   host: string
-  apiKey: string
+  apiKeys: PostGridApiKeys
   webhookUrl?: string
   webhookSecret?: string
   webhookEvents?: string[]
@@ -62,10 +75,16 @@ export class PostGrid {
   bankAccount: BankAccountApi
   check: CheckApi
   webhook: WebhookApi
+  address: AddressApi
 
-  constructor (apiKey: string, options?: PostGridOptions) {
+  constructor (apiKeys: PostGridApiKeys | string, options?: PostGridOptions) {
     this.host = options?.host || POSTGRID_HOST
-    this.apiKey = apiKey
+    // see if we support the legacy usage of just the one Print-Mail key
+    if (typeof apiKeys === 'string') {
+      this.apiKeys = { mail: apiKeys }
+    } else {
+      this.apiKeys = apiKeys
+    }
     this.webhookUrl = options?.webhookUrl
     this.webhookSecret = options?.webhookSecret
     this.webhookEvents = options?.webhookEvents
@@ -77,6 +96,7 @@ export class PostGrid {
     this.bankAccount = new BankAccountApi(this, options)
     this.check = new CheckApi(this, options)
     this.webhook = new WebhookApi(this, options)
+    this.address = new AddressApi(this, options)
 
     // if we have a webhook, then create that now
     if (this.webhookUrl) {
@@ -97,7 +117,8 @@ export class PostGrid {
   async fire(
     method: string,
     uri: string,
-    query?: { [index:string] : number | string },
+    headers?: any,
+    query?: { [index:string] : number | string | boolean },
     body?: object | object[] | FormData,
   ): Promise<{ response: any, payload?: any }> {
     // build up the complete url from the provided 'uri' and the 'host'
@@ -108,11 +129,10 @@ export class PostGrid {
     }
     const isForm = isFormData(body)
     // make the appropriate headers
-    let headers = {
+    headers = { ...headers,
       Accept: 'application/json',
-      'x-api-key': this.apiKey,
       'X-PostGrid-Client-Ver': ClientVersion,
-    } as any
+    }
     if (!isForm) {
       headers = { ...headers, 'Content-Type': 'application/json' }
     }
@@ -121,6 +141,7 @@ export class PostGrid {
       method: method,
       body: isForm ? (body as any) : (body ? JSON.stringify(body) : undefined),
       headers,
+      redirect: 'follow',
     })
     try {
       const payload = camelCaseKeys((await response.json()), {deep: true})
@@ -157,4 +178,20 @@ export function mkError(message: string): PostGridError {
     type: 'client',
     message,
   }
+}
+
+/*
+ * Each function in each Api class needs to test and make sure that the
+ * Client has the appropriate API Key for PostGrid to do what it needs
+ * to do. So rather than duplicate that code and structure, we simply
+ * have it here, so each of the API Keys, and import it in each module.
+ */
+export const NO_ADDR_API_KEY = {
+  success: false,
+  error: mkError('Missing PostGrid Address API Key!'),
+}
+
+export const NO_MAIL_API_KEY = {
+  success: false,
+  error: mkError('Missing PostGrid Print-Mail API Key!'),
 }

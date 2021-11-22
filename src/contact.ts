@@ -1,3 +1,4 @@
+import path from 'path'
 import type { PostGrid, PostGridOptions, PostGridError } from './'
 
 export interface Contact {
@@ -29,11 +30,15 @@ export interface ContactList {
   data: Contact[];
 }
 
+import { NO_MAIL_API_KEY } from './'
+
 export class ContactApi {
   client: PostGrid;
+  baseRoute: string;
 
   constructor(client: PostGrid, options?: PostGridOptions) {  // eslint-disable-line no-unused-vars
     this.client = client
+    this.baseRoute = 'print-mail/v1/'
   }
 
   /*
@@ -46,9 +51,15 @@ export class ContactApi {
     contact?: Contact,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return NO_MAIL_API_KEY
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      `contacts/${id}`
+      path.join(this.baseRoute, 'contacts', id),
+      { 'x-api-key': this.client.apiKeys.mail }
     )
     if (resp?.response?.status >= 400) {
       return {
@@ -69,9 +80,15 @@ export class ContactApi {
     contacts?: ContactList,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return NO_MAIL_API_KEY
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'GET',
-      'contacts',
+      path.join(this.baseRoute, 'contacts'),
+      { 'x-api-key': this.client.apiKeys.mail },
       { skip: skip || 0, limit: limit || 40 },
     )
     if (resp?.response?.status >= 400) {
@@ -111,10 +128,16 @@ export class ContactApi {
     contact?: Contact,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return NO_MAIL_API_KEY
+    }
+    // ...and now we can make the call...
     const body = contact
     const resp = await this.client.fire(
       'POST',
-      'contacts',
+      path.join(this.baseRoute, 'contacts'),
+      { 'x-api-key': this.client.apiKeys.mail },
       undefined,
       body)
     if (resp?.response?.status >= 400) {
@@ -136,9 +159,15 @@ export class ContactApi {
     contact?: Contact,
     error?: PostGridError,
   }> {
+    // make sure we have the API Key for this call
+    if (!this.client.apiKeys.mail) {
+      return NO_MAIL_API_KEY
+    }
+    // ...and now we can make the call...
     const resp = await this.client.fire(
       'DELETE',
-      `contacts/${id}`
+      path.join(this.baseRoute, 'contacts', id),
+      { 'x-api-key': this.client.apiKeys.mail },
     )
     if (resp?.response?.status >= 400) {
       return {

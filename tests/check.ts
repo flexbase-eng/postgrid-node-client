@@ -1,7 +1,10 @@
 import { PostGrid } from '../src/index'
 
 (async () => {
-  const client = new PostGrid(process.env.POSTGRID_API_KEY!)
+  const client = new PostGrid({
+    mail: process.env.POSTGRID_MAIL_API_KEY,
+    addr: process.env.POSTGRID_ADDR_API_KEY,
+  })
 
   console.log('creating a single Check...')
   const what = {
@@ -36,7 +39,6 @@ import { PostGrid } from '../src/index'
   const one = await client.check.create(what)
   if (one.success) {
     console.log('Success!')
-    console.log(JSON.stringify(one, null, 2))
   } else {
     console.log('Error! Creating the check failed, and the output is:')
     console.log(one)
@@ -56,8 +58,7 @@ import { PostGrid } from '../src/index'
   console.log('listing the first page of 40 Checks...')
   const tre = await client.check.list()
   if (tre.success) {
-    console.log('Success!')
-    console.log(JSON.stringify(tre, null, 2))
+    console.log(`Success! The list contained ${tre.checks!.data!.length} checks...`)
   } else {
     console.log('Error! Listing the check failed, and the output is:')
     console.log(tre)

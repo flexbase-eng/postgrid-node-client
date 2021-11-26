@@ -134,16 +134,16 @@ export class AddressApi {
    *       status: 'success',
    *       message: 'Retrieved verified address completions successfully.',
    *       data: [
-   *         { line1: '77 N MAIN ST', city: undefined, provinceOrState: 'UT' },
-   *         { line1: '77 S MAIN ST', city: undefined, provinceOrState: 'UT' },
-   *         { line1: '77 N MAIN ST', city: undefined, provinceOrState: 'UT' },
-   *         { line1: '77 S MAIN ST', city: undefined, provinceOrState: 'UT' },
-   *         { line1: '77 E MAIN ST', city: undefined, provinceOrState: 'UT' },
-   *         { line1: '77 W MAIN ST', city: undefined, provinceOrState: 'UT' },
-   *         { line1: '77 N MAIN ST', city: 'ABERDEEN', provinceOrState: 'ID' },
-   *         { line1: '77 S MAIN ST', city: 'ABERDEEN', provinceOrState: 'ID' },
-   *         { line1: '77 N MAIN ST', city: 'ABERDEEN', provinceOrState: 'SD' },
-   *         { line1: '77 S MAIN ST', city: 'ABERDEEN', provinceOrState: 'SD' }
+   *         { line1: '77 N MAIN ST', city: undefined, postalOrZip: '84622' },
+   *         { line1: '77 S MAIN ST', city: undefined, postalOrZip: '84622' },
+   *         { line1: '77 N MAIN ST', city: undefined, postalOrZip: '84657' },
+   *         { line1: '77 S MAIN ST', city: undefined, postalOrZip: '84657' },
+   *         { line1: '77 E MAIN ST', city: undefined, postalOrZip: '84775' },
+   *         { line1: '77 W MAIN ST', city: undefined, postalOrZip: '84775' },
+   *         { line1: '77 N MAIN ST', city: 'ABERDEEN', postalOrZip: '83210' },
+   *         { line1: '77 S MAIN ST', city: 'ABERDEEN', postalOrZip: '83210' },
+   *         { line1: '77 N MAIN ST', city: 'ABERDEEN', postalOrZip: '57401' },
+   *         { line1: '77 S MAIN ST', city: 'ABERDEEN', postalOrZip: '57401' }
    *       ]
    *     }
    *   }
@@ -172,7 +172,7 @@ export class AddressApi {
         properCase: true,
         partialStreet: street,
         countryFilter: country || 'US',
-        provInsteadOfPC: true,
+        provInsteadOfPC: false,
       },
     )
     if (resp?.response?.status >= 400) {
@@ -183,7 +183,7 @@ export class AddressApi {
       resp.payload.data = resp.payload.data
         .map((p: any) => p.preview)
         .map((p: any) => {
-          return { line1: p.address, city: p.city, provinceOrState: p.prov }
+          return { line1: p.address, city: p.city, postalOrZip: p.pc }
         })
     }
     return {

@@ -9,6 +9,7 @@ import { PostGrid } from '../src/index'
   console.log('creating a single Contact...')
   const who = {
     addressLine1: '2929 Eagledale Dr',
+    city: 'Indianapolis',
     provinceOrState: 'IN',
     postalOrZip: '46224',
     countryCode: 'US',

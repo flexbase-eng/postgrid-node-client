@@ -8,6 +8,7 @@ export interface Contact {
   description?: string;
   addressLine1?: string;
   addressLine2?: string;
+  city?: string;
   provinceOrState?: string;
   postalOrZip?: string;
   country?: string;
@@ -112,6 +113,7 @@ export class ContactApi {
     description?: string;
     addressLine1?: string;
     addressLine2?: string;
+    city?: string;
     provinceOrState?: string;
     postalOrZip?: string;
     country?: string;

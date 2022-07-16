@@ -389,6 +389,25 @@ all of these are covered in the different forms of the PostGrid _Create Letter_
 endpoints, but the Client detects the inputs and acts accordingly. You just
 have to provide the data.
 
+As a final note, you can also pass in the optional _Idempotency Key_ to the
+`create()` function, and this will have the added benefit that PostGrid will
+not create a duplicate Letter - within 24 hrs, of the initial `create()` call
+with the same `idempotencyKey`. The key is provided in the call as an optional
+second parameter:
+
+```typescript
+const letter = await client.letter.create({
+  description: 'Cool new letter',
+  pdf: 'https://www.icnaam.org/documents/8x11singlesample.pdf',
+  to: 'contact_f8NLBJXjV82HnM8emVow3r',
+  from: 'contact_fo3HwdeFZ3wwNuHFAgszHt',
+}, {
+  idempotencyKey: '9d972254-34eb-492e-90c2-739087a8487d'
+})
+```
+
+where this example is just using a UUID.
+
 #### [Get a Letter](https://docs.postgrid.com/#8bc03c09-8a5d-4353-9e76-689a47af5e82)
 
 ```typescript
@@ -656,6 +675,25 @@ const postcard = await client.postcard.create({
 all of these are covered in the different forms of the PostGrid _Create Postcard_
 endpoints, but the Client detects the inputs and acts accordingly. You just
 have to provide the data.
+
+As a final note, you can also pass in the optional _Idempotency Key_ to the
+`create()` function, and this will have the added benefit that PostGrid will
+not create a duplicate Postcard - within 24 hrs, of the initial `create()` call
+with the same `idempotencyKey`. The key is provided in the call as an optional
+second parameter:
+
+```typescript
+const postcard = await client.postcard.create({
+  description: 'Cool new postcard',
+  pdf: 'https://my.artwork.com/postcards/6x4sample.pdf',
+  to: 'contact_f8NLBJXjV82HnM8emVow3r',
+  from: 'contact_fo3HwdeFZ3wwNuHFAgszHt',
+}, {
+  idempotencyKey: '9d972254-34eb-492e-90c2-739087a8487d'
+})
+```
+
+where this example is just using a UUID.
 
 #### [Get a Postcard](https://docs.postgrid.com/#51ca8b0c-dc40-44cb-bf7c-b784976d8d35)
 
@@ -1109,6 +1147,29 @@ const postcard = await client.postcard.create({
 all of these are covered in the different forms of the PostGrid _Create Cheque_
 endpoints, but the Client detects the inputs and acts accordingly. You just
 have to provide the data.
+
+As a final note, you can also pass in the optional _Idempotency Key_ to the
+`create()` function, and this will have the added benefit that PostGrid will
+not create a duplicate Check - within 24 hrs, of the initial `create()` call
+with the same `idempotencyKey`. The key is provided in the call as an optional
+second parameter:
+
+```typescript
+const postcard = await client.postcard.create({
+  description: 'Cool new check',
+  letterHTML: 'Hello {{to.firstName}}',
+  to: 'contact_f8NLBJXjV82HnM8emVow3r',
+  from: 'contact_fo3HwdeFZ3wwNuHFAgszHt',
+  bankAccount: 'bank_gMpKxPyiGzt1ZwACTmLHHn',
+  amount: 10000,
+  memo: 'Invoice 1233',
+  number: 9667,
+}, {
+  idempotencyKey: '9d972254-34eb-492e-90c2-739087a8487d'
+})
+```
+
+where this example is just using a UUID.
 
 #### [Get a Check](https://docs.postgrid.com/#a289e66f-c4b0-42cb-903a-d479cbb27f59)
 

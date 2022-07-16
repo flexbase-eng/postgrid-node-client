@@ -173,9 +173,9 @@ export class PostcardApi {
       body = form as any
     }
     // now build up the headers - including the optional idempotencyKey
-    let headers = { 'x-api-key': this.client.apiKeys.mail }
-    if (options.idempotencyKey) {
-      headers['Idempotency-Key'] = options.idempotencyKey
+    let headers = { 'x-api-key': this.client.apiKeys.mail } as any
+    if (options?.idempotencyKey) {
+      headers['Idempotency-Key'] = options!.idempotencyKey
     }
     const resp = await this.client.fire(
       'POST',

@@ -119,6 +119,8 @@ export class PostcardApi {
     url?: string;
     mergeVariables?: any;
     metadata?: any;
+  }, options?: {
+    idempotencyKey?: string;
   }): Promise<{
     success: boolean,
     postcard?: Postcard,
@@ -170,10 +172,15 @@ export class PostcardApi {
       // ...and this is what is sent to PostGrid
       body = form as any
     }
+    // now build up the headers - including the optional idempotencyKey
+    let headers = { 'x-api-key': this.client.apiKeys.mail }
+    if (options.idempotencyKey) {
+      headers['Idempotency-Key'] = options.idempotencyKey
+    }
     const resp = await this.client.fire(
       'POST',
       path.join(this.baseRoute, 'postcards'),
-      { 'x-api-key': this.client.apiKeys.mail },
+      headers,
       undefined,
       body)
     if (resp?.response?.status >= 400) {

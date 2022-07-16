@@ -125,6 +125,8 @@ export class LetterApi {
     pageCount?: number
     mergeVariables?: any;
     metadata?: any;
+  }, options?: {
+    idempotencyKey?: string;
   }): Promise<{
     success: boolean,
     letter?: Letter,
@@ -179,10 +181,15 @@ export class LetterApi {
       // ...and this is what is sent to PostGrid
       body = form as any
     }
+    // now build up the headers - including the optional idempotencyKey
+    let headers = { 'x-api-key': this.client.apiKeys.mail }
+    if (options.idempotencyKey) {
+      headers['Idempotency-Key'] = options.idempotencyKey
+    }
     const resp = await this.client.fire(
       'POST',
       path.join(this.baseRoute, 'letters'),
-      { 'x-api-key': this.client.apiKeys.mail },
+      headers,
       undefined,
       body)
     if (resp?.response?.status >= 400) {

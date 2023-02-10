@@ -19,7 +19,8 @@
   },
   "contributors": [
     "Bob Beaty <bob@flexbase.app>",
-    "Patrick Flor <patrick@flexbase.app>"
+    "Patrick Flor <patrick@flexbase.app>",
+    "Alex Pearson <alex.pearson@flexbase.app>"
   ],
   "engines": {
     "node": ">=10.*"

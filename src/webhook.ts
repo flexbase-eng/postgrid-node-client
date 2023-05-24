@@ -50,7 +50,7 @@ export class WebhookApi {
   }
 
   /*
-   * Function to take a Webhook id and return the Wbhook object in the
+   * Function to take a Webhook id and return the Webhook object in the
    * response. If the webhook isn't in the system, then we will return
    * the appropriate error.
    */

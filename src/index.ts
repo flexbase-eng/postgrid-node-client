@@ -137,14 +137,24 @@ export class PostGrid {
       headers = { ...headers, 'Content-Type': 'application/json' }
     }
     // now we can make the call... see if it's a JSON body or a FormData one...
-    const response = await fetch(url, {
-      method: method,
-      body: isForm ? (body as any) : (body ? JSON.stringify(body) : undefined),
-      headers,
-      redirect: 'follow',
-    })
+    let response
     try {
-      const payload = camelCaseKeys((await response.json()), {deep: true})
+      response = await fetch(url, {
+        method: method,
+        body: isForm ? (body as any) : (body ? JSON.stringify(body) : undefined),
+        headers,
+        redirect: 'follow',
+      })
+    } catch (err) {
+      // if we get an error at this point, it's because the upstream service is unavailable
+      const response = { status: 503 }
+      const error = err?.message ?? `Failed to fetch ${uri}`
+      const payload = { error }
+      return { response, payload }
+    }
+
+    try {
+      const payload = camelCaseKeys((await response.json()), { deep: true })
       return { response, payload }
     } catch (err) {
       return { response }

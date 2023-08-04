@@ -119,6 +119,7 @@ export class PostcardApi {
     url?: string;
     mergeVariables?: any;
     metadata?: any;
+    express?: boolean;
   }, options?: {
     idempotencyKey?: string;
   }): Promise<{

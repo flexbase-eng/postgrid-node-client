@@ -125,6 +125,7 @@ export class LetterApi {
     pageCount?: number
     mergeVariables?: any;
     metadata?: any;
+    express?: boolean;
   }, options?: {
     idempotencyKey?: string;
   }): Promise<{

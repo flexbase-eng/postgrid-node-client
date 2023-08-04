@@ -129,6 +129,7 @@ export class CheckApi {
     letterPDF?: Buffer | string;
     mergeVariables?: any;
     metadata?: any;
+    express?: boolean;
   }, options?: {
     idempotencyKey?: string;
   }): Promise<{
